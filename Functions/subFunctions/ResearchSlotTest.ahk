@@ -53,7 +53,7 @@ ResearchSlotTest() {
     ; checking if slot 1 is ready for free claim
     PixelSearch, X, Y, 588*VarX, (911-22)*VarY + BorTop, 620*VarX, (967-22)*VarY + BorTop, 0xF9AA47, 3, Fast RGB
     If (ErrorLevel = 0){
-        MouseMove, 545*VarX, (940-22)*VarY + BorTop
+        MouseMove, 575*VarX, (940-22)*VarY + BorTop ; x=545 origin
         MsgBox, , Slot 1 Status, Слот 1 доступен для БЕСПЛАТНОГО завершения., 1.5
         Click
         Sleep, 1000
@@ -69,7 +69,7 @@ ResearchSlotTest() {
     PixelSearch, X, Y, 588*VarX, (911-22)*VarY + BorTop, 620*VarX, (967-22)*VarY + BorTop, 0x0AA008, 3, Fast RGB
     If (ErrorLevel = 0){
         MsgBox, , Slot 1 Status, Слот 1 готов к ЗАВЕРШЕНИЮ., 1.5
-        MouseMove, 545*VarX, (940-22)*VarY + BorTop
+        MouseMove, 575*VarX, (940-22)*VarY + BorTop ; x=545 origin
         Sleep, 1000
         Click
         Sleep, 1000

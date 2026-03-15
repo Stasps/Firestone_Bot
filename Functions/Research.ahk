@@ -8,7 +8,7 @@ global Slot1InProcess := 0
 global Slot2InProcess := 0
 
 GoResearch() {
-    ControlFocus,, Firestone.exe
+    ControlFocus,, Firestone
 	MsgBox, ,Research.ahk, открываем библиотеку, 1
     ; open Library
     MouseMove, 329*VarX, (657-22)*VarY + BorTop

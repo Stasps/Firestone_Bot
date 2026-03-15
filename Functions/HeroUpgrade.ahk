@@ -13,7 +13,6 @@ ClickHeroIfPixelFound(x1, y1, x2, y2, color, clickX, clickY, clickCount := 20)
         PixelSearch, X, Y, x1, y1, x2, y2, color, 3, Fast RGB
         if (ErrorLevel = 0){
             ; Pixel found -> click
-            ;MsgBox, ,err,SendHeartbeat("HeroUpgrade: found pixel", false, true)
             MouseClick, Left, clickX, clickY, 1, 0
             Sleep, 300  ; wait between clicks
         } else {
@@ -24,7 +23,7 @@ ClickHeroIfPixelFound(x1, y1, x2, y2, color, clickX, clickY, clickCount := 20)
 
 ; function that upgrades heros
 HeroUpgrade(){
-    ControlFocus,, ahk_exe Firestone
+    ControlFocus,, Firestone
 
     ; Fetch GUI settings locally
     GuiControlGet, NoHeroVal, , NoHero
@@ -54,25 +53,47 @@ HeroUpgrade(){
         Count := 0
         Loop
         {
-            PixelSearch, X, Y, 1500*ResXnew/1920, ((975-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1504*ResXnew/1920, ((985-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x542710, 3, Fast RGB
-            if (ErrorLevel = 0)
-            {
-                ; Found the toggle button color indicating we are NOT on max/milestone yet?
-                ; Or clicking to toggle. Based on your code, this clicks until satisfied.
-                MouseClick, Left, 1649*ResXnew/1920, ((970-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1, 0
-                Sleep, 300
-                break
-            }
-            ; Try clicking to switch mode
-            MouseClick, Left, 1649*ResXnew/1920, ((970-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1, 0
-            Sleep, 300
-            Count++
-            if (Count >= MaxTries)
-            {
-                MsgBox, , Hero Upgrades, Failed to find pixel after %Count% tries., 2
-                break
-            }
-        }
+;            PixelSearch, X, Y, 1500*ResXnew/1920, ((975-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1504*ResXnew/1920, ((985-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x542710, 3, Fast RGB
+;            if (ErrorLevel = 0)
+;            {
+;                ; Found the toggle button color indicating we are NOT on max/milestone yet?
+;                ; Or clicking to toggle. Based on your code, this clicks until satisfied.
+;                MouseClick, Left, 1649*ResXnew/1920, ((970-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1, 0
+;                Sleep, 300
+;                break
+;            }
+;            ; Try clicking to switch mode
+;            MouseClick, Left, 1649*ResXnew/1920, ((970-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1, 0
+;            Sleep, 300
+;            Count++
+;            if (Count >= MaxTries)
+;            {
+;                MsgBox, , Hero Upgrades, Failed to find pixel after %Count% tries., 2
+;                break
+;            }
+
+		
+found := ImageSearchDLL(X, Y, 1450*ResXnew/1920, ((950-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1750*ResXnew/1920, ((1025-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), UpgradeMax.png, 0.6, 1.5, 0.02) ; диапазон масштаба и шаг
+
+if (found)
+{
+    ; Картинка найдена — значит, кнопка видна (например, режим не max)
+    ; Кликаем по той же точке, что и раньше
+    MouseClick, Left, 1649*ResXnew/1920, ((970-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1, 0
+    Sleep, 300
+    break
+}
+
+; Если не нашли — пробуем кликнуть и повторить
+MouseClick, Left, 1649*ResXnew/1920, ((970-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1, 0
+Sleep, 300
+Count++
+if (Count >= MaxTries)
+{
+    MsgBox, , Hero Upgrades, Failed to find image after %Count% tries., 2
+    break
+}
+}
 
         ; --- Special Upgrade ---
         If (UpgradeSpecial = 1)

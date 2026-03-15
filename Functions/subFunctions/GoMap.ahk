@@ -4,7 +4,7 @@
 
 GoMap()
 {ControlFocus,, Firestone
-    MsgBox, , GoMap.ahk, Открываем окно карты, 1.5
+    MsgBox, , GoMap.ahk, открываем окно карты, 1.5
     Send, M
     Sleep, 1500
 }

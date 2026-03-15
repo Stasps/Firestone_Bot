@@ -4,13 +4,13 @@
 
 ;function that does the guardian training and guardian evolving
 Guardian(){
-    ControlFocus,, ahk_exe Firestone
+    ControlFocus,, Firestone
     ; open Magic Quarter
 	MsgBox, ,, Тренируем выбранного стража, 1
     MouseMove, 658*ResXnew/1920, ((284-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
     Sleep, 1000
     click
-    Sleep, 2000
+    Sleep, 3000
     ; check for evolve
     PixelSearch, X, Y, 1307*ResXnew/1920, ((107-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1346*ResXnew/1920, ((136-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x0F40000, 3, Fast RGB
     if(ErrorLevel=0){

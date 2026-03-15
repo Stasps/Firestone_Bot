@@ -17,7 +17,6 @@ Guild(){
     ; check if expeditions are ready
     PixelSearch, X, Y, 450*ResXnew/1920, ((410-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 380*ResXnew/1920, ((490-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0xF40000, 3, Fast RGB
     If (ErrorLevel = 0){
-        ;MsgBox, ,err,SendHeartbeat("Guild expedition start", false, true)
         MouseMove, 308*ResXnew/1920, ((406-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
         Sleep, 1000
         Click
@@ -81,7 +80,6 @@ ClaimAxes(){
     Sleep, 1500
     PixelSearch, X, Y, 764*ResXnew/1920, ((617-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 869*ResXnew/1920, ((653-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x1EA569, 3, Fast RGB
     If (ErrorLevel = 0){
-        ;MsgBox, ,err,SendHeartbeat("ClaimAxe", false, true)
         MouseMove, 716*ResXnew/1920, ((637-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
         Sleep, 1000
         Click
@@ -97,7 +95,6 @@ HitCrystal(){
     Sleep, 1500
     PixelSearch, X, Y, 1101*ResXnew/1920, ((904-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1075*ResXnew/1920, ((946-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x0AA008, 3, Fast RGB
     If (ErrorLevel = 0){
-        ;MsgBox, ,err,SendHeartbeat("HitCrystal", false, true)
         MouseMove, 957*ResXnew/1920, ((896-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
         Sleep, 1000
         Click

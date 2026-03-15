@@ -3,7 +3,8 @@
 
 MapStart(){
     stateFile := "MapStartState.ini"
-
+	CoordMode, Mouse, Screen
+		
     ; --- 1. Memory and Timer Management ---
     IniRead, SessionStart, %stateFile%, Memory, SessionStart, %A_Space%
     IniRead, ClickedPoints, %stateFile%, Memory, ClickedPoints, %A_Space%
@@ -20,20 +21,20 @@ MapStart(){
 
     ; --- 2. Mission Definitions ---
     Squad2 := []
-    Squad2.Insert(Object("x",1207,"y",35))  ; 1207\32 original
+    Squad2.Insert(Object("x",1207,"y",32))  ; 1207\32 original
     Squad2.Insert(Object("x",1177,"y",35))
     Squad2.Insert(Object("x",1104,"y",43))
     Squad2.Insert(Object("x",1290,"y",101)) ; 1290\99 original
     Squad2.Insert(Object("x",1533,"y",105)) ; 1533\98 original
     Squad2.Insert(Object("x",384,"y",1009)) ; Pirate Cove
     Squad2.Insert(Object("x",484,"y",920)) ; Dragon Island
-    Squad2.Insert(Object("x",543,"y",1032)) ; Hydra
+    Squad2.Insert(Object("x",543,"y",1030)) ; Hydra / original - 543/1032
     Squad2.Insert(Object("x",633,"y",576)) ; Dragon's Cave
     Squad2.Insert(Object("x",616,"y",204)) ; Frostfire Gorge
     Squad2.Insert(Object("x",1150,"y",340)) ; Irongard's Harbor
     Squad2.Insert(Object("x",883,"y",460)) ; Lake's Terror
     Squad2.Insert(Object("x",1130,"y",546)) ; Collect The Bounty
-    Squad2.Insert(Object("x",836,"y",1039)) ; Open Sea
+    Squad2.Insert(Object("x",836,"y",1029)) ; Open Sea / original - 536/1039
     Squad2.Insert(Object("x",970,"y",810)) ; Orc Lieutenant
     Squad2.Insert(Object("x",1486,"y",770)) ; Ships On Fire
     Squad2.Insert(Object("x",1255,"y",853)) ; Trade Route
@@ -180,7 +181,7 @@ MapStart(){
 
                 MsgBox, , Troop Check, Looking for more idle troops, 2
                 ; Check Troops (Brown Pixel)
-                PixelSearch, X, Y, 1175*VarX, (996-22)*VarY + BorTop, 1187*VarX, (1012-22)*VarY + BorTop, 0x542710, 10, Fast RGB
+                PixelSearch, X, Y, 1140*VarX, (996-22)*VarY + BorTop, 1187*VarX, (1012-22)*VarY + BorTop, 0x542710, 10, Fast RGB
                 If(ErrorLevel=0){
                     ; Troops available -> Continue the list
                     Continue
@@ -195,7 +196,7 @@ MapStart(){
             }
 
             ; Check Troops after each interaction (even if not started)
-            PixelSearch, X, Y, 1175*VarX, (996-22)*VarY + BorTop, 1187*VarX, (1012-22)*VarY + BorTop, 0x542710, 10, Fast RGB
+            PixelSearch, X, Y, 1140*VarX, (996-22)*VarY + BorTop, 1187*VarX, (1012-22)*VarY + BorTop, 0x542710, 10, Fast RGB
             If(ErrorLevel != 0){
                 MsgBox, , Troop Check, No idle troops found - ending mission search, 2
                 Return
@@ -205,7 +206,7 @@ MapStart(){
         ; --- End of list ---
         ; If we are here, we have traversed everything (or skipped everything).
         ; Check if troops remain (Requested case: "reset if clicked everywhere but troops available")
-        PixelSearch, X, Y, 1175*VarX, (996-22)*VarY + BorTop, 1187*VarX, (1012-22)*VarY + BorTop, 0x542710, 10, Fast RGB
+        PixelSearch, X, Y, 1140*VarX, (996-22)*VarY + BorTop, 1187*VarX, (1012-22)*VarY + BorTop, 0x542710, 10, Fast RGB
         If (ErrorLevel=0 and AttemptNum == 1) {
             ; Troops available + 1st attempt finished = We missed something because of memory.
             ; RESET and start over (Loop 2)

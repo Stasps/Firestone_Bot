@@ -25,7 +25,7 @@ RAST(){
     } Else {
         ; check for status of slot 1
         MsgBox, , Slot 1 Status, Checking status of slot 1... , 1.5
-        MouseMove, 554*VarX, (939-22)*VarY + BorTop
+        MouseMove, 575*VarX, (939-22)*VarY + BorTop ; x=554 origin
         Sleep, 1000
         Click
         Sleep, 500

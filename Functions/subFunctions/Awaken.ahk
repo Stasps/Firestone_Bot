@@ -3,12 +3,11 @@
 #Include Functions\subFunctions\BigClose.ahk
 
 AwakenRun(){
-    ControlFocus,, ahk_exe Firestone.exe
+    ControlFocus,, Firestone
 	MsgBox, ,Awaken.ahk, это ещё не работает!,2
     ; Check for awaken heroes notification on crystal screen
     PixelSearch, X, Y, 1107, 745, 1367, 944, 0xF40000, 3, Fast RGB
     If (ErrorLevel = 0){
-        ;MsgBox, ,err,SendHeartbeat("AwakenRun: found notif", false, true)
         MouseMove, 1192, 847
         Sleep, 1000
         Click
@@ -38,7 +37,6 @@ AwakenRun(){
             }
         }
         ; Change to auto
-        ;MsgBox, ,err,SendHeartbeat("AwakenRun: auto button", false, false)
         MouseMove, 1774, 993
         Sleep, 1000
         Click

@@ -6,6 +6,7 @@
 
 ; Function to redeem the missions
 MapRedeem(){
+	CoordMode, Pixel, Screen
     ControlFocus,, Firestone
     ; check if missions can be reset for free
     MsgBox, , Рестарт миссий, Проверяем: можно ли бесплатно перезагрузить миссии, 1.5
@@ -47,26 +48,30 @@ MapRedeem(){
     Sleep, 1000
     Click
     Sleep, 1000
-    PixelSearch, X, Y, 1427*ResXnew/1920, ((730-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1481*ResXnew/1920, ((762-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x916A38, 0, Fast RGB
-    If (ErrorLevel = 0){
-        MsgBox, , MapRedeem.ahk, Mission has more than 3 minutes reamining, 1.5
-        MapClose()
-        Goto, Troops
-    } Else {
-        ; check for free to complete early missions
-        PixelSearch, X, Y, 1427*ResXnew/1920, ((730-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1481*ResXnew/1920, ((762-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0xF9AA47, 10, Fast RGB
-        If (ErrorLevel = 0){
-            MouseMove, 1365*ResXnew/1920, ((758-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
-            MsgBox, , MapRedeem.ahk, Mission can be completed early for free, 1.5
-            Click
-            Sleep, 1000
-            MouseMove, 971*ResXnew/1920, ((628-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
-            Sleep, 1000
-            Click
-            Sleep, 1000
-            Goto, Checks
-        }
+	
+; Поиск кнопки SpeedUp с поддержкой масштабирования
+found := ImageSearchDLL(X, Y, 1227*ResXnew/1920, ((730-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1481*ResXnew/1920, ((862-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), SpeedUp.png, 0.6, 1.5, 0.02)
+if (found) {
+    ; SpeedUp найден — миссия ещё идёт
+    MsgBox, , MapRedeem.ahk, До завершения миссии БОЛЬШЕ 3х минут, 1.5
+    MapClose()
+    Goto, Troops
+} else {
+    ; SpeedUp не найден — проверяем Free
+    found := ImageSearchDLL(X, Y, 1227*ResXnew/1920, ((730-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1481*ResXnew/1920, ((862-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), Free.png, 0.6, 1.5, 0.02)
+    if (found) {
+        ; Free найден — можно завершить бесплатно
+        MouseMove, 1365*ResXnew/1920, ((758-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
+        MsgBox, , MapRedeem.ahk, Миссию можно завершить БЕСПЛАТНО, 1.5
+        Click
+        Sleep, 1000
+        MouseMove, 971*ResXnew/1920, ((628-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
+        Sleep, 1000
+        Click
+        Sleep, 1000
+        Goto, Checks
     }
+}
     ; check 2nd mission in case of greyed out first mission bug
     PixelSearch, X, Y, 205*ResXnew/1920, ((443-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 242*ResXnew/1920, ((484-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x0AA008, 3, Fast RGB
     If (ErrorLevel = 0){
@@ -80,7 +85,6 @@ MapRedeem(){
     PixelSearch, X, Y, 1140*ResXnew/1920, ((996-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 1187*ResXnew/1920, ((1012-22)*(ResYnew-BorTop-BorBot)/1010+BorTop), 0x542710, 10, Fast RGB
         If (ErrorLevel = 0){
             MsgBox, , Проверка отрядов, есть СВОБОДНЫЕ отряды и ДОСТУПНЫ миссии, 1
-            ;MsgBox, ,err,SendHeartbeat("Map: Free troops found", false, true)
 ;============ переключее на поиск миссий =============
             if (SearchMissoin = 1){
 				MapStart()

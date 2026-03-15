@@ -4,7 +4,7 @@
 
 ;alchemist start
 Alchemist(){
-    ControlFocus,, ahk_exe Firestone
+    ControlFocus,, Firestone
     ; open Alchemist
     MouseMove, 511*ResXnew/1920, ((837-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
     Sleep, 1000

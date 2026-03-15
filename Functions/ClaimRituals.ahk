@@ -6,7 +6,7 @@
 
 ;function that checks Oracle
 ClaimRituals(){
-    ControlFocus,, ahk_exe Firestone
+    ControlFocus,, Firestone
     ; open Oracle in town
     MouseMove, 1023*ResXnew/1920, ((994-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
     sleep, 1000
