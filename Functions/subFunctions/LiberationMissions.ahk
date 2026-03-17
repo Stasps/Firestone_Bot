@@ -1,4 +1,4 @@
-; LiberationMissions.ahk
+; LiberationMissions.ahk — адаптировано
 
 #Include Functions\subFunctions\BigClose.ahk
 #Include Functions\subFunctions\LiberationInProgressCheck.ahk
@@ -103,7 +103,7 @@ LiberationMissions(){
     ; === 80 Stars ===
     80Stars:
     {
-		; error - С‚СѓС‚ РІРѕР·РјРѕР¶РЅР° РѕС€РёР±РєР°. РїРѕС‚РѕРјСѓ 133 Р·Р°РјРµРЅРёР» РЅР° 145
+		; error - тут возможна ошибка. потому 133 заменил на 145
         MouseMove, 145*VarX, (748-22)*VarY + BorTop, 0
         Sleep, 1000
         Click

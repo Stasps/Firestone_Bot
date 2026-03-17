@@ -1,4 +1,4 @@
-;Arena.ahk
+;Arena.ahk Ч адаптировано
 
 #Include Functions\subFunctions\ArenaBattle.ahk
 #Include Functions\subFunctions\BigClose.ahk

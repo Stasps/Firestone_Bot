@@ -1,4 +1,4 @@
-; ClaimCampaign.ahk
+; ClaimCampaign.ahk Ч адаптировано
 
 #Include Functions\subFunctions\LiberationMissions.ahk
 #Include Functions\subFunctions\GoMap.ahk

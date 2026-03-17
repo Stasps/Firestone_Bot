@@ -1,4 +1,4 @@
-; LiberationInProgressCheck.ahk
+; LiberationInProgressCheck.ahk Ч адаптировано
 
 LiberationInProgress(){
     Search:
