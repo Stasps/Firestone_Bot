@@ -1,4 +1,4 @@
-п»ї#Include Functions\subFunctions\BigClose.ahk
+#Include Functions\subFunctions\BigClose.ahk
 #Include Functions\subFunctions\MapClose.ahk
 
 MapStart(){
@@ -22,8 +22,8 @@ MapStart(){
     ; --- 2. Mission Definitions ---
     Squad2 := []
     Squad2.Insert(Object("x",1207,"y",32))  ; 1207\32 original
-    Squad2.Insert(Object("x",1177,"y",35))
-    Squad2.Insert(Object("x",1104,"y",43))
+    Squad2.Insert(Object("x",1177,"y",32))	; 1177\35 original
+    Squad2.Insert(Object("x",1104,"y",43))	; 1104\43 original
     Squad2.Insert(Object("x",1290,"y",101)) ; 1290\99 original
     Squad2.Insert(Object("x",1533,"y",105)) ; 1533\98 original
     Squad2.Insert(Object("x",384,"y",1009)) ; Pirate Cove
@@ -54,7 +54,7 @@ MapStart(){
     War.Insert(Object("x",1017,"y",426)) ; Recruit Soldiers
     War.Insert(Object("x",1055,"y",780)) ; The Pit
     War.Insert(Object("x",1145,"y",626)) ; Protect The Shore
-    War.Insert(Object("x",1152,"y",969)) ; Sea Monsters
+    War.Insert(Object("x",1152,"y",963)) ; Sea Monsters - (оригинал) - "x",1152,"y",969
     War.Insert(Object("x",1224,"y",312)) ; Free The Prisoners
     War.Insert(Object("x",1228,"y",550)) ; Forest Rangers
     War.Insert(Object("x",1252,"y",392)) ; Mission To Bayshire
@@ -154,8 +154,8 @@ MapStart(){
             ; Unique identifier for this point (x|y)
             CoordID := "|" . x . "|" . y . "|"
 
-			; ===== РґР»СЏ РѕС‚Р»Р°РґРєРё =====
-;			MsgBox, , РґР»СЏ РѕС‚Р»Р°РґРєРё, CoordID = %CoordID%`nx = %x% y = %y%, 0.5
+			; ===== для отладки =====
+;			MsgBox, , для отладки, CoordID = %CoordID%`nx = %x% y = %y%, 0.5
 
             ; Memory check: if already clicked, skip
             if (InStr(ClickedPoints, CoordID)) {
