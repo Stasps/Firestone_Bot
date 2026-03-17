@@ -89,7 +89,7 @@ SettingsMap["BorTop"] := ["Resolution"]
 SettingsMap["BorBot"] := ["Resolution"]
 SettingsMap["VarX"] := ["Variable",0]
 SettingsMap["VarY"] := ["Variable",0]
-RusVer := "0.3.4"
+RusVer := "0.3.5"
 Ratio := ResXnew / (ResYnew - BorBot - BorTop)
 RatioStand := 1980/(1080 - 22 - 48)
 SettingsMap["Ratio"] := ["Debug"]
@@ -225,7 +225,7 @@ if (GuardianTrain != "")
 
 ; --- Оракул ---
 Gui, Add, GroupBox, x20 y405 w300 h100, Оракул
-Gui, Add, Checkbox, x35 y425 w250 vBless Checked%Bless%, Upgrade Blessings
+Gui, Add, Checkbox, x35 y425 w250 vBless Checked%Bless%, Улучшать благословления
 Gui, Add, Checkbox, x35 y450 w250 vDailyOracle Checked%DailyOracle%, Забирать ежедневные награды оракула
 Gui, Add, Checkbox, x35 y475 w250 vSkipOracle Checked%SkipOracle%, (Общий) пропустить оракула
 
@@ -504,20 +504,21 @@ Gui, Tab, 6
     Gui, Add, Text, x40 y+5, - сражаться на арене, а так же выполнять мисcии особождения\подземелья (0.3.2)
     Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо (0.3.3)
 	Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\ежнедельные задания, проверять почту, забирать награды событий (0.3.4)
+	Gui, Add, Text, x40 y+5, - улучшать Благословления оракула (0.3.5)
 
-    ; --- Шаблон: по идее работает, но не тестировал (закомментировано) ---
+    ; --- Шаблон: по идее работает, но не тестировал ---
     Gui, Font, Bold
     Gui, Add, Text, x40 y+15, по идее работает, но не тестировал (в яндекс играх):
     Gui, Font, Norm
-    Gui, Add, Text, x40 y+5, - сражаться на арене, а так же выполнять мисcии особождения\подземелья
-    Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо
-    Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\ежнедельные задания, проверять почту, забирать награды событий (0.3.4)
+    Gui, Add, Text, x40 y+5, - всё, что добавлено в версии 0.3.2 и выше (начиная со сражений на арене и далее по списку)
+    ;Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо
+    ;Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\ежнедельные задания, проверять почту, забирать награды событий (0.3.4)
 
-    ; --- Шаблон: не умеет (закомментировано) ---
-    ; Gui, Font, Bold
-    ; Gui, Add, Text, x40 y+15, не умеет:
-    ; Gui, Font, Norm
-    ; Gui, Add, Text, x40 y+5, - пункт 1 (пример)
+    ; --- Шаблон: не умеет ---
+    Gui, Font, Bold
+    Gui, Add, Text, x40 y+15, не умеет:
+    Gui, Font, Norm
+    Gui, Add, Text, x40 y+5, - Открывать сундуки
     ; Gui, Add, Text, x40 y+5, - пункт 2 (пример)
     ; Gui, Add, Text, x40 y+5, - пункт 3 (пример)
 
