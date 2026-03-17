@@ -237,45 +237,48 @@ if (Delay != "")
     GuiControl, ChooseString, Delay, %Delay%
 
 
-    ; === COLUMN 2 ===
-    ; --- Chests & Rewards ---
-    Gui, Add, GroupBox, x335 y70 w300 h150, Chests & Rewards
-    Gui, Add, Checkbox, xp+15 yp+20 vChests Checked%Chests%, Open Chests (General)
-    Gui, Add, Text, y+7, Exclude Gear Chests:
-    Gui, Add, DropDownList, w260 vGearChestExclude, Exclude All|Don't Exclude Any|Epic and Higher|Legendary and Higher|Mythic||
-    if (GearChestExclude != "")
-        GuiControl, ChooseString, GearChestExclude, %GearChestExclude%
+; ========== КОЛОНКА 2 ==========
+; --- Chests & Rewards ---
+Gui, Add, GroupBox, x335 y70 w300 h160, Chests & Rewards
+Gui, Add, Checkbox, x350 y90 w250 vChests Checked%Chests%, Open Chests (General)
 
-    Gui, Add, Text, y+7, Exclude Jewel Chests:
-    Gui, Add, DropDownList, w260 vJewelChestExclude, Exclude All|Don't Exclude Any|Diamond and Higher||Opal and Higher|Emerald
-    if (JewelChestExclude != "")
-        GuiControl, ChooseString, JewelChestExclude, %JewelChestExclude%
+Gui, Add, Text, x350 y115 w250, Exclude Gear Chests:
+Gui, Add, DropDownList, x350 y135 w250 vGearChestExclude, Exclude All|Don't Exclude Any|Epic and Higher|Legendary and Higher|Mythic||
+if (GearChestExclude != "")
+    GuiControl, ChooseString, GearChestExclude, %GearChestExclude%
 
-    ; --- Alchemy ---
-    Gui, Add, GroupBox, x335 yp+35 w300 h80, Алхимия
-    Gui, Add, Checkbox, xp+15 yp+30 vAlch Checked%Alch%, пропустить алхимию
-    Gui, Font, Italic
-	Gui, Add, Text, y+5, запускает алхимих только за кровь дракона
-    Gui, Font, Norm
+Gui, Add, Text, x350 y170 w250, Exclude Jewel Chests:
+Gui, Add, DropDownList, x350 y190 w250 vJewelChestExclude, Exclude All|Don't Exclude Any|Diamond and Higher||Opal and Higher|Emerald
+if (JewelChestExclude != "")
+    GuiControl, ChooseString, JewelChestExclude, %JewelChestExclude%
 
+; --- Alchemy ---
+Gui, Add, GroupBox, x335 y240 w300 h80, Алхимия
+Gui, Add, Checkbox, x350 y265 w250 vAlch Checked%Alch%, пропустить алхимию
+Gui, Font, Italic
+Gui, Add, Text, x350 y285 w250 cGray, запускает алхимию только за кровь дракона
+Gui, Font, Norm
 
 ; --- Hero Upgrades ---
-    Gui, Add, GroupBox, x335 yp+30 w300 h240, Улучшение героев на этапах
-    Gui, Add, Checkbox, xp+15 yp+20 vNoHero Checked%NoHero%, (общее) не улучшать героев 
-    Gui, Add, Checkbox, y+10 vNextMilestone Checked%NextMilestone%, (НЕ РАБОТАЕТ) Улучшать до макс уровня
-	Gui, Font, Italic
-	Gui, Add, Text, y+5, если выключено, нажмает "улучишть" по разу `nза круг потому желательно выставить в игре:`n улучать до макс уровня
-    Gui, Font, Norm
-    Gui, Add, Text, y+15, Выберите героев, которых улучшать:
-    Gui, Add, Checkbox, y+5 vUpgradeSpecial Checked%UpgradeSpecial%, Общие улучшения
-    Gui, Add, Checkbox, x+10 vUpgradeGuardian Checked%UpgradeGuardian%, Стражи
+Gui, Add, GroupBox, x335 y330 w300 h260, Улучшение героев на этапах
+Gui, Add, Checkbox, x350 y355 w250 vNoHero Checked%NoHero%, (общее) не улучшать героев
+Gui, Add, Checkbox, x350 y380 w250 vNextMilestone Checked%NextMilestone%, (НЕ РАБОТАЕТ) Улучшать до макс уровня
 
-    ;Heroes list
-    Gui, Add, Checkbox, x350 y+10 vUpgradeH1 Checked%UpgradeH1%, Герой на позиции 1
-    Gui, Add, Checkbox, x+10 vUpgradeH2 Checked%UpgradeH2%, Герой на позиции 2
-    Gui, Add, Checkbox, x350 y+5 vUpgradeH3 Checked%UpgradeH3%, Герой на позиции 3
-    Gui, Add, Checkbox, x+10 vUpgradeH4 Checked%UpgradeH4%, Герой на позиции 4
-    Gui, Add, Checkbox, x350 y+5 vUpgradeH5 Checked%UpgradeH5%, Герой на позиции 5
+Gui, Font, Italic
+Gui, Add, Text, x350 y405 w250 cGray, если выключено — нажимает «улучшить» по разу
+Gui, Add, Text, x350 y420 w250 cGray, за круг. Желательно выставить в игре:
+Gui, Add, Text, x350 y435 w250 cGray, «улучшать до макс уровня»
+Gui, Font, Norm
+
+Gui, Add, Text, x350 y460 w250, Выберите героев для улучшения:
+
+Gui, Add, Checkbox, x350 y480 w140 vUpgradeSpecial Checked%UpgradeSpecial%, Общие
+Gui, Add, Checkbox, x480 y480 w140 vUpgradeGuardian Checked%UpgradeGuardian%, Стражи
+Gui, Add, Checkbox, x350 y505 w140 vUpgradeH1 Checked%UpgradeH1%, Герой на позиции 1
+Gui, Add, Checkbox, x480 y505 w140 vUpgradeH2 Checked%UpgradeH2%, Герой на позиции 2
+Gui, Add, Checkbox, x350 y530 w140 vUpgradeH3 Checked%UpgradeH3%, Герой на позиции 3
+Gui, Add, Checkbox, x480 y530 w140 vUpgradeH4 Checked%UpgradeH4%, Герой на позиции 4
+Gui, Add, Checkbox, x350 y555 w140 vUpgradeH5 Checked%UpgradeH5%, Герой на позиции 5
 
 ; ========== КОЛОНКА 3 ==========
 ; --- Daily Routine ---
