@@ -1,9 +1,11 @@
 ; BigClose.ahk
 
-;function to close menus
+; function to close menus
 BigClose(){
-    MouseMove, 1880*ResXnew/1920, (75*(ResYnew-BorTop-BorBot)/1010+BorTop)
-	; DEFAULT y = 88
+    ; клик по центру крестика закрытия окна
+    ; адаптировано под разрешение и отступы
+	; по умолчанию было 1880,75
+    MouseMove, 1845*VarX, (75-22)*VarY + BorTop, 0
     Sleep, 1000
     Click
     Sleep, 1500
