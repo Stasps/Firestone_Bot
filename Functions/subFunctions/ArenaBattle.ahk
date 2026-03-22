@@ -1,4 +1,4 @@
-; ArenaBattle.ahk Ч адаптировано
+; ArenaBattle.ahk - адаптировано
 
 ArenaBattle(){
     Wait:

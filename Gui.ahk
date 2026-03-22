@@ -160,7 +160,7 @@ Gui, Tab, 1
     Gui, Add, Text, x60 y+2 w820, % "• На вкладке «Настройки экрана» укажи параметры экрана, отступы сверху\снизу до игрового поля"
     Gui, Add, Text, x60 y+1 w820, % "• ESC — остановка бота"
     Gui, Add, Text, x60 y+1 w820, % "• Если текст переведён — функция активна. Если нет — лучше отключить"
-    Gui, Add, Text, x60 y+1 w820, % "• Не перемещай карту миссий и не используй зум. После сдвига — перезайди в игру"
+    Gui, Add, Text, x60 y+1 w820, % "• Не перемещай карту миссий и не используй зум. Если случайно сдвинул — перезайди в игру"
 
     ; ----- Известные ошибки -----
     Gui, Font, Bold
@@ -390,12 +390,20 @@ Gui, Tab, 3
 ; TAB 4: WAR MACHINES
 ; ------------------------------------------------------------------------------
 Gui, Tab, 4
-    ; --- Misc ---
-    Gui, Add, GroupBox, x40 y50 w880 h100, Battle & Miscellaneous
-    Gui, Add, Checkbox, xp+15 yp+30 vPVP Checked%PVP%, Сражаться на арене королей (PvP)
-    Gui, Add, Checkbox, x+20 vLiberation Checked%Liberation%, Выполнять освободительные миссии
-    Gui, Add, Checkbox, x+20 vDungeonQuest Checked%DungeonQuest%, Выполнять миссии в подземелье
 
+    ; --- Misc ---
+    Gui, Add, GroupBox, x40 y50 w880 h120, Battle & Miscellaneous
+    
+    ; Первая строка чекбоксов
+    Gui, Add, Checkbox, x55 y80 w240 vPVP Checked%PVP%, Сражаться на арене королей (PvP)
+    Gui, Add, Checkbox, x305 y80 w240 vLiberation Checked%Liberation%, Выполнять освободительные миссии
+    Gui, Add, Checkbox, x555 y80 w240 vDungeonQuest Checked%DungeonQuest%, Выполнять миссии в подземелье
+    
+    ; Подсказка курсивом (под третьим чекбоксом)
+    Gui, Font, Italic s8, Segoe UI
+    Gui, Add, Text, x570 y105 w240 cGray, % "должны быть включены`nосвободительные миссии"
+    Gui, Font, Norm s9, Segoe UI
+	
     ; --- War Machines ---
     Gui, Add, GroupBox, x40 y170 w880 h350, War Machines & Talents
     Gui, Add, Text, xp+15 yp+30, War Machine to Upgrade:

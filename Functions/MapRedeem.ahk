@@ -10,15 +10,25 @@ MapRedeem(){
     CoordMode, Pixel, Screen
     ControlFocus,, Firestone
 
-    ; check if missions can be reset for free (ЭТО ПРОВЕРИТЬ И ПЕРЕДЕЛАТЬ)
+    ; check if missions can be reset for free
     MsgBox, , Рестарт миссий, Проверяем: можно ли бесплатно перезагрузить миссии, 1.5
     ControlFocus,, Firestone
-    PixelSearch, X, Y, 221*VarX, (878-22)*VarY + BorTop, 277*VarX, (891-22)*VarY + BorTop, 0x47ACFC, 3, Fast RGB
+    
+    ; расширенный квадрат поиска
+    PixelSearch, X, Y, 110*VarX, (880-22)*VarY + BorTop, 280*VarX, (950-22)*VarY + BorTop, 0xFCAC47, 3, Fast RGB
     If (ErrorLevel = 0){
-        MouseMove, 173*VarX, (918-22)*VarY + BorTop, 0
-        MsgBox, , Рестарт миссий, УРА! кнопка FREE!, 1.5
-        Click
-        Sleep, 1000  ; серверный отклик
+        ; оранжевый найден — проверяем, нет ли алмазов
+        PixelSearch, X, Y, 110*VarX, (880-22)*VarY + BorTop, 280*VarX, (950-22)*VarY + BorTop, 0xCB00FB, 3, Fast RGB
+        If (ErrorLevel = 0){
+            ; найден алмаз — завершить бесплатно нельзя
+            MsgBox, , Рестарт миссий, Только за алмазы, 1.5
+        } Else {
+            ; алмаза нет — можно завершить бесплатно
+            MouseMove, 173*VarX, (918-22)*VarY + BorTop, 0
+            MsgBox, , Рестарт миссий, УРА! кнопка FREE!, 1.5
+            Click
+            Sleep, 1000
+        }
     }
 
     Checks:

@@ -6,7 +6,7 @@
 Guardian(){
     ControlFocus,, Firestone
     ; open Magic Quarter
-	MsgBox, ,, Тренируем выбранного стража, 1
+	MsgBox, ,, ’ренируем выбранного стража, 1
     MouseMove, 658*ResXnew/1920, ((284-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
     Sleep, 1000
     click
@@ -20,7 +20,7 @@ Guardian(){
         Sleep, 1000
         MouseMove, 1117*ResXnew/1920, ((750-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
         Click
-        Sleep, 10500
+        Sleep, 1000
         MouseMove, 1291*ResXnew/1920, ((171-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
         Sleep, 1000
         Click

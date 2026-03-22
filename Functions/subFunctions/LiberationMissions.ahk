@@ -264,10 +264,13 @@ LiberationMissions(){
                 While !LiberationInProgress(){
                     Sleep, 5000
                 }
+                BigClose()
+                Return
             }
         }
     }
     
+    ; если DungeonQuest выключен С закрываем окно один раз и выходим
     BigClose()
-    BigClose()
+    Return
 }
