@@ -9,9 +9,9 @@ global Slot2InProcess := 0
 
 GoResearch() {
     ControlFocus,, Firestone
-	MsgBox, ,Research.ahk, открываем библиотеку, 1
+	MsgBox, ,Research.ahk, "ќткрываем библиотеку", 1
     ; open Library
-    MouseMove, 329*VarX, (657-22)*VarY + BorTop
+    MouseMove, 360*VarX, (657-22)*VarY + BorTop ;x default = 329
     Sleep, 1000
     click
     sleep, 1000
