@@ -1,14 +1,10 @@
-#NoEnv
+п»ї#NoEnv
 #SingleInstance, Force
 SetBatchLines, -1
 SetWorkingDir, %A_ScriptDir%
 
-; ==============================================================================
-; CONFIGURATION & GLOBAL VARIABLES
-; ==============================================================================
-Global SettingsMap := {}
+global SettingsMap := {}
 
-; --- Common Options ---
 SettingsMap["Token"] := ["CommonOptions", 0]
 SettingsMap["SellEx"] := ["CommonOptions", 0]
 SettingsMap["SellScrolls"] := ["CommonOptions", 0]
@@ -38,7 +34,6 @@ SettingsMap["UpgradeH3"] := ["HeroOptions", 1]
 SettingsMap["UpgradeH4"] := ["HeroOptions", 1]
 SettingsMap["UpgradeH5"] := ["HeroOptions", 1]
 
-; --- Mission Priority ---
 SettingsMap["Priority1"] := ["MissionPriority", "2 Squad"]
 SettingsMap["Priority2"] := ["MissionPriority", "War"]
 SettingsMap["Priority3"] := ["MissionPriority", "Medium"]
@@ -47,7 +42,6 @@ SettingsMap["Priority5"] := ["MissionPriority", "Leftover"]
 SettingsMap["SearchMissoin"] := ["MissionPriority", 1]
 SettingsMap["MapReset"] := ["MissionPriority", 0]
 
-; --- QoL/Rare Options ---
 SettingsMap["Beer"] := ["QoL/RareOptions", 1]
 SettingsMap["Scarab"] := ["QoL/RareOptions", 1]
 SettingsMap["NoGuild"] := ["QoL/RareOptions", 0]
@@ -61,7 +55,6 @@ SettingsMap["NoHero"] := ["QoL/RareOptions", 0]
 SettingsMap["NextMilestone"] := ["QoL/RareOptions", 0]
 SettingsMap["DisableWarning"] := ["QoL/RareOptions", 1]
 
-; --- Other Options ---
 SettingsMap["Shop"] := ["OtherOptions", 0]
 SettingsMap["DailyOracle"] := ["OtherOptions", 0]
 SettingsMap["PVP"] := ["OtherOptions", 0]
@@ -72,10 +65,8 @@ SettingsMap["Blueprints"] := ["OtherOptions", "Damage Only"]
 SettingsMap["Talents450"] := ["OtherOptions", "Don't Upgrade Talents (0-450 Talent Points)"]
 SettingsMap["Talents800"] := ["OtherOptions", "Don't Upgrade Talents (500+ Talent Points)"]
 
-; --- SettingsNoGui (Maintained for code compatibility) ---
 SettingsMap["DungeonQuest"] := ["SettingsNoGui", 0]
 
-; --- Настройки разрешения ---
 global ResXnew
 global ResYnew
 global BorTop
@@ -87,14 +78,13 @@ SettingsMap["ResXnew"] := ["Resolution"]
 SettingsMap["ResYnew"] := ["Resolution"]
 SettingsMap["BorTop"] := ["Resolution"]
 SettingsMap["BorBot"] := ["Resolution"]
-SettingsMap["VarX"] := ["Variable",0]
-SettingsMap["VarY"] := ["Variable",0]
-RusVer := "0.4.1"
-Ratio := ResXnew / (ResYnew - BorBot - BorTop)
-RatioStand := 1980/(1080 - 22 - 48)
+SettingsMap["VarX"] := ["Variable", 0]
+SettingsMap["VarY"] := ["Variable", 0]
+SettingsMap["UILanguage"] := ["UI", "ru"]
+
+AppVersion := "0.4.1"
 SettingsMap["Ratio"] := ["Debug"]
 
-; --- Personal Tree ---
 SettingsMap["AttDmg"] := ["PersonalTree", 0]
 SettingsMap["AttHp"] := ["PersonalTree", 0]
 SettingsMap["AttArm"] := ["PersonalTree", 0]
@@ -116,453 +106,554 @@ SettingsMap["Tank"] := ["PersonalTree", 0]
 SettingsMap["Damage"] := ["PersonalTree", 0]
 SettingsMap["Heal"] := ["PersonalTree", 0]
 
-; Load settings immediately
 LoadSettings()
+RecalculateDerivedSettings()
+BuildGui()
+return
 
-; ==============================================================================
-; GUI CONSTRUCTION
-; ==============================================================================
-Gui, +OwnDialogs
-Gui, Font, s9, Segoe UI
-Gui, Color, White
+BuildGui() {
+    global AppVersion
+    global GuardianTrain, Delay, GearChestExclude, JewelChestExclude
+    global Priority1, Priority2, Priority3, Priority4, Priority5
+    global UpgradeWM, WMOptions, Blueprints, Talents450, Talents800
+    global SellEx, ExoticUpgrades, BuyEx, SellScrolls, SellNoGold, SellAll, SellNone
+    global NoEng, Research, DisableWarning, Bless, DailyOracle, SkipOracle
+    global Chests, Alch, NoHero, NextMilestone
+    global UpgradeSpecial, UpgradeGuardian, UpgradeH1, UpgradeH2, UpgradeH3, UpgradeH4, UpgradeH5
+    global Mail, Quests, Events, Chaos, Shop, Token, Beer, Scarab, SearchMissoin, MapReset
+    global NoGuild, Pickaxes, Crystal, Awaken, GNotif, PTree
+    global AttDmg, AttHp, AttArm, Energy, Mana, Rage, MainAtt
+    global Miner, Battle, Prest, Fire, Gold, Level, Guard
+    global Fist, Prec, Magic, Tank, Damage, Heal
+    global PVP, Liberation, DungeonQuest
+    global ResXnew, ResYnew, BorTop, BorBot, VarX, VarY, Ratio, RatioStand
+    global UILanguage
 
-; Tabs Structure
-Gui, Add, Tab3, x0 y0 w960 h620, Home|Общие настройки|Гильдия и личное древо|Боевые машины|Настройки экрана|Версия
-; ------------------------------------------------------------------------------
-; TAB 1: HOME (INSTRUCTIONS & START)
-; ------------------------------------------------------------------------------
-Gui, Tab, 1
+    Gui, Destroy
+    Gui, +OwnDialogs
+    Gui, Font, s9, Segoe UI
+    Gui, Color, White
+
+    tabLabels := T("tabHome") "|" T("tabGeneral") "|" T("tabGuild") "|" T("tabWar") "|" T("tabScreen") "|" T("tabVersion")
+    Gui, Add, Tab3, x0 y0 w960 h620, %tabLabels%
+
+    Gui, Tab
+    Gui, Add, Text, x735 y12 w70 Right, % T("languageLabel")
+    Gui, Add, DropDownList, x810 y9 w120 vUILanguageChoice gChangeLanguage AltSubmit, Р СѓСЃСЃРєРёР№|English
+    GuiControl, Choose, UILanguageChoice, % (UILanguage = "en" ? 2 : 1)
+
+    Gui, Tab, 1
     Gui, Font, s14 Bold
-    Gui, Add, Text, x20 y25 w920 Center, % "Я твой BOT version " RusVer
+    Gui, Add, Text, x20 y25 w920 Center, % T("homeTitlePrefix") " " AppVersion
     Gui, Font, s10 Norm
-    ; Gui, Add, Text, x20 yp+25 w920 Center, бот в разработке (закомментировано)
-    
-    ; --- Instructions Group ---
-    Gui, Add, GroupBox, x40 y50 w880 h470, % "Важные требования и инструкции"
-
-    ; ----- Система и настройка игры -----
+    Gui, Add, GroupBox, x40 y50 w880 h470, % T("homeRequirements")
     Gui, Font, Bold
-    Gui, Add, Text, xp+20 yp+25 w840, % "Система и настройка игры:"
+    Gui, Add, Text, xp+20 yp+25 w840, % T("homeSystemTitle")
     Gui, Font, Norm
-    Gui, Add, Text, x60 y+1 w820, % "• В браузерной версии окно браузера должно начинаться с заголовка Firestone"
-    Gui, Add, Text, x60 y+1 w820, % "• Тип интерфейса: Мобильная или ПК версия (новый стиль не поддерживается)"
-    Gui, Add, Text, x60 y+1 w820, % "• Язык в игре: English (Русский интерфейс не тестировался, но должен работать исправно)"
-    Gui, Add, Text, x60 y+1 w820, % "• Раскладка клавиатуры: обязательно английская (в будующем уберём эту привязку)"
-    Gui, Add, Text, x60 y+1 w820, % "• Режим окна: оконный, панель ПУСК не скрыта (полноэкранный режим нестабилен)"
-    Gui, Add, Text, x60 y+1 w820, % "• Включи «подтверждение использования самоцветов» (на всякий случай)"
-    Gui, Add, Text, x60 y+1 w820, % "• (Редкое) Масштаб экрана: 100% (в настройках системы - параметры экрана). По умолчанию у всех ОК."
-
-    ; ----- Настройка и использование бота -----
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem1")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem2")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem3")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem4")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem5")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem6")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSystem7")
     Gui, Font, Bold
-    Gui, Add, Text, x60 y+10 w820, % "Настройка и использование бота:"
+    Gui, Add, Text, x60 y+10 w820, % T("homeSetupTitle")
     Gui, Font, Norm
-    
-    Gui, Add, Text, x60 y+1 w820, % "• На вкладке «Настройки экрана» укажи параметры экрана, отступы сверху\снизу до игрового поля"
-    Gui, Add, Text, x60 y+1 w820, % "• ESC — остановка бота"
-    Gui, Add, Text, x60 y+1 w820, % "• Если текст переведён — функция активна. Если нет — лучше отключить"
-    Gui, Add, Text, x60 y+1 w820, % "• Не перемещай карту миссий и не используй зум. Если случайно сдвинул — перезайди в игру"
-
-    ; ----- Известные ошибки -----
+    Gui, Add, Text, x60 y+1 w820, % T("homeSetup1")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSetup2")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSetup3")
+    Gui, Add, Text, x60 y+1 w820, % T("homeSetup4")
     Gui, Font, Bold
-    Gui, Add, Text, x60 y+10 w820, % "Известные ошибки:"
+    Gui, Add, Text, x60 y+10 w820, % T("homeKnownTitle")
     Gui, Font, Norm
-    
-    Gui, Add, Text, x60 y+1 w820, % "• Если соотношение сторон игрового поля сильно отличается от идеала (~1.96), бот может промахиваться по кнопкам."
-    Gui, Add, Text, x60 y+1 w820, % " Текущее соотношение можно увидеть на вкладке «Настройки экрана». Выше 2.1 могут возникнуть проблемы"
-    
-    Gui, Add, Text, x60 y+1 w820, % "• При поиске миссий для двух отрядов (2 Squat) может задеть кнопки покупки славы/отряда"
-    Gui, Add, Text, x60 y+1 w820, % " Рекомендуется  первый запуск проследить, куда будут первые 10-15 кликов на карте"
-	
-	Gui, Add, Text, x60 y+1 w820, % "• Опция «Улучшать до макс уровня» работает неправильно (галочку не ставьте)"
-    Gui, Add, Text, x60 y+1 w820, % " Перед запуском бота, в окне усиления героев поставить «усилить макс»"
-	
-	Gui, Add, Text, x60 y+1 w820, % "• Бот может кликать не в окне игры, а в другом"
-    Gui, Add, Text, x60 y+1 w820, % " Связанно с тем, что бот ищет активное (не свёрнутое) окно с заголовком начинающимся с Firestone"
-	Gui, Add, Text, x60 y+1 w820, % " Если игра свёрнута или есть другое окно с тамик заголовком, бот может не находить окно игры"
-      
-    ; Жирное предупреждение
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown1")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown2")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown3")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown4")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown5")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown6")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown7")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown8")
+    Gui, Add, Text, x60 y+1 w820, % T("homeKnown9")
     Gui, Font, Bold
-    Gui, Add, Text, x60 y+5 w820, % "  (ВАЖНО) первый запуск рекомендуется контролировать вручную (понаблюдать пару циклов, всё ли делает правильно)"
+    Gui, Add, Text, x60 y+5 w820, % T("homeWarning")
     Gui, Font, Norm
-    
+    Gui, Add, Button, x240 y530 w200 h45 gSaveSettings, % T("saveButton")
+    Gui, Add, Button, x520 y530 w200 h45 gButtonStart, % T("startBotButton")
 
-
-    ; --- Action Buttons ---
-    Gui, Add, Button, x240 y530 w200 h45 gSaveSettings, % "СОХРАНИТЬ"
-    Gui, Add, Button, x520 y530 w200 h45 gButtonStart, % "ЗАПУСТИТЬ БОТА"
-	
-; ------------------------------------------------------------------------------
-; TAB 2: GENERAL OPTIONS
-; ------------------------------------------------------------------------------
-Gui, Tab, 2
+    Gui, Tab, 2
     Gui, Font, Bold
-    Gui, Add, Text, x20 y40 w900 h30 Center, ОБЩИЕ НАСТРОЙКИ
+    Gui, Add, Text, x20 y40 w900 h30 Center, % T("generalHeader")
     Gui, Font, s9 Norm
+    Gui, Add, GroupBox, x20 y70 w300 h190, % T("sellingGroup")
+    Gui, Add, Checkbox, x35 y90 w250 vSellEx Checked%SellEx%, % T("sellEx")
+    Gui, Add, Checkbox, x35 y110 w250 vExoticUpgrades Checked%ExoticUpgrades%, % T("exoticUpgrades")
+    Gui, Add, Checkbox, x35 y130 w250 vBuyEx Checked%BuyEx%, % T("buyEx")
+    Gui, Add, Text, x35 y155 w250, % T("sellingStrategy")
+    Gui, Add, Radio, x35 y175 w250 vSellScrolls Checked%SellScrolls%, % T("sellScrolls")
+    Gui, Add, Radio, x35 y195 w250 vSellNoGold Checked%SellNoGold%, % T("sellNoGold")
+    Gui, Add, Radio, x35 y215 w250 vSellAll Checked%SellAll%, % T("sellAll")
+    Gui, Add, Radio, x35 y235 w250 vSellNone Checked%SellNone%, % T("sellNone")
+    Gui, Add, GroupBox, x20 y265 w300 h130, % T("automationGroup")
+    Gui, Add, Checkbox, x35 y285 w250 vNoEng Checked%NoEng%, % T("skipEngineer")
+    Gui, Add, Checkbox, x35 y310 w250 vResearch Checked%Research%, % T("skipResearch")
+    Gui, Add, Checkbox, x35 y335 w250 vDisableWarning Checked%DisableWarning%, % T("disableSteamWarning")
+    Gui, Add, Text, x35 y363 w150, % T("guardianTrain")
+    Gui, Add, DropDownList, x155 y360 w130 vGuardianTrain, Vermilion|Grace|Ankaa|Azhar
+    if (GuardianTrain != "")
+        GuiControl, ChooseString, GuardianTrain, %GuardianTrain%
+    Gui, Add, GroupBox, x20 y400 w300 h100, % T("oracleGroup")
+    Gui, Add, Checkbox, x35 y425 w280 vBless Checked%Bless%, % T("blessings")
+    Gui, Add, Checkbox, x35 y450 w280 vDailyOracle Checked%DailyOracle%, % T("dailyOracle")
+    Gui, Add, Checkbox, x35 y475 w280 vSkipOracle Checked%SkipOracle%, % T("skipOracle")
+    Gui, Add, GroupBox, x20 y515 w300 h60, % T("delayGroup")
+    Gui, Add, Text, x35 y540 w150, % T("delayLabel")
+    Gui, Add, DropDownList, x155 y537 w130 vDelay, 0|30|60||90|120
+    if (Delay != "")
+        GuiControl, ChooseString, Delay, %Delay%
 
-; ========== КОЛОНКА 1 ==========
-; --- Selling & Exotic ---
-Gui, Add, GroupBox, x20 y70 w300 h190, Selling & Exotic Merchant
-Gui, Add, Checkbox, x35 y90 w250 vSellEx Checked%SellEx%, Open Exotic Merchant (Master)
-Gui, Add, Checkbox, x35 y110 w250 vExoticUpgrades Checked%ExoticUpgrades%, Buy Exotic Upgrades
-Gui, Add, Checkbox, x35 y130 w250 vBuyEx Checked%BuyEx%, Buy Exotic Chests
-
-Gui, Add, Text, x35 y155 w250, Selling Strategy:
-Gui, Add, Radio, x35 y175 w250 vSellScrolls Checked%SellScrolls%, 1. Sell ONLY Exotic Scrolls
-Gui, Add, Radio, x35 y195 w250 vSellNoGold Checked%SellNoGold%, 2. Sell All But Gold Items
-Gui, Add, Radio, x35 y215 w250 vSellAll Checked%SellAll%, 3. Sell All Exotic Items
-Gui, Add, Radio, x35 y235 w250 vSellNone Checked%SellNone%, 4. Sell Nothing
-
-; --- Other Automation ---
-Gui, Add, GroupBox, x20 y265 w300 h130, Прочие автоматизации
-Gui, Add, Checkbox, x35 y285 w250 vNoEng Checked%NoEng%, Пропустить механика
-Gui, Add, Checkbox, x35 y310 w250 vResearch Checked%Research%, Пропустить исследования
-Gui, Add, Checkbox, x35 y335 w250 vDisableWarning Checked%DisableWarning%, Disable Steam Warning
-
-; --- Тренировка стража ---
-Gui, Add, Text, x35 y363 w150, Тренировать стража:
-Gui, Add, DropDownList, x155 y360 w130 vGuardianTrain, Vermilion|Grace|Ankaa|Azhar
-if (GuardianTrain != "")
-    GuiControl, ChooseString, GuardianTrain, %GuardianTrain%
-
-; --- Оракул ---
-Gui, Add, GroupBox, x20 y400 w300 h100, Оракул
-Gui, Add, Checkbox, x35 y425 w280 vBless Checked%Bless%, (не работает!) Улучшать благословления
-Gui, Add, Checkbox, x35 y450 w280 vDailyOracle Checked%DailyOracle%, Забирать ежедневные награды оракула
-Gui, Add, Checkbox, x35 y475 w280 vSkipOracle Checked%SkipOracle%, (Общий) пропустить оракула
-
-; --- Пауза между циклами бота ---
-Gui, Add, GroupBox, x20 y515 w300 h60, Пауза между циклами бота
-Gui, Add, Text, x35 y540 w150, Перерыв (секунд):
-Gui, Add, DropDownList, x155 y537 w130 vDelay, 0|30|60||90|120
-if (Delay != "")
-    GuiControl, ChooseString, Delay, %Delay%
-
-
-; ========== КОЛОНКА 2 ==========
-; --- Chests & Rewards ---
-Gui, Add, GroupBox, x335 y70 w300 h160, Chests & Rewards
-Gui, Add, Checkbox, x350 y90 w250 vChests Checked%Chests%, Open Chests (General)
-
-Gui, Add, Text, x350 y115 w250, Exclude Gear Chests:
-Gui, Add, DropDownList, x350 y135 w250 vGearChestExclude, Exclude All|Don't Exclude Any|Epic and Higher|Legendary and Higher|Mythic||
-if (GearChestExclude != "")
-    GuiControl, ChooseString, GearChestExclude, %GearChestExclude%
-
-Gui, Add, Text, x350 y170 w250, Exclude Jewel Chests:
-Gui, Add, DropDownList, x350 y190 w250 vJewelChestExclude, Exclude All|Don't Exclude Any|Diamond and Higher||Opal and Higher|Emerald
-if (JewelChestExclude != "")
-    GuiControl, ChooseString, JewelChestExclude, %JewelChestExclude%
-
-; --- Alchemy ---
-Gui, Add, GroupBox, x335 y240 w300 h80, Алхимия
-Gui, Add, Checkbox, x350 y265 w250 vAlch Checked%Alch%, пропустить алхимию
-Gui, Font, Italic
-Gui, Add, Text, x350 y285 w280 cGray, запускает алхимию только за кровь дракона
-Gui, Font, Norm
-
-; --- Hero Upgrades ---
-Gui, Add, GroupBox, x335 y330 w300 h260, Улучшение героев на этапах
-Gui, Add, Checkbox, x350 y350 w270 vNoHero Checked%NoHero%, (общее) не улучшать героев
-Gui, Add, Checkbox, x350 y375 w270 vNextMilestone Checked%NextMilestone%, (НЕ РАБОТАЕТ) Улучшать до макс уровня
-
-Gui, Font, Italic
-Gui, Add, Text, x350 y390 w270 cGray, Если выключено — улучшает каждого героя\стража по одному разу за круг. Потому перед стартом бота желательно выставить «усились макс.»
-Gui, Font, Norm
-
-Gui, Add, Text, x350 y460 w250, Выберите героев для улучшения:
-
-Gui, Add, Checkbox, x350 y480 w135 vUpgradeSpecial Checked%UpgradeSpecial%, Общие
-Gui, Add, Checkbox, x490 y480 w135 vUpgradeGuardian Checked%UpgradeGuardian%, Стражи
-Gui, Add, Checkbox, x350 y505 w135 vUpgradeH1 Checked%UpgradeH1%, Герой на позиции 1
-Gui, Add, Checkbox, x490 y505 w135 vUpgradeH2 Checked%UpgradeH2%, Герой на позиции 2
-Gui, Add, Checkbox, x350 y530 w135 vUpgradeH3 Checked%UpgradeH3%, Герой на позиции 3
-Gui, Add, Checkbox, x490 y530 w135 vUpgradeH4 Checked%UpgradeH4%, Герой на позиции 4
-Gui, Add, Checkbox, x350 y555 w135 vUpgradeH5 Checked%UpgradeH5%, Герой на позиции 5
-
-; ========== КОЛОНКА 3 ==========
-; --- Daily Routine ---
-Gui, Add, GroupBox, x650 y70 w290 h150, Ежедневные награды
-Gui, Add, Checkbox, x665 y90 w250 vMail Checked%Mail%, Проверять\чистить почту
-Gui, Add, Checkbox, x665 y115 w250 vQuests Checked%Quests%, Забирать награду в квестах (дня\недели)
-Gui, Add, Checkbox, x665 y140 w250 vEvents Checked%Events%, Забирать награду в событиях
-Gui, Add, Checkbox, x665 y165 w250 vChaos Checked%Chaos%, Участвовать в разломе хаоса
-Gui, Add, Checkbox, x665 y190 w250 vShop Checked%Shop%, Подарки (магазин) и награды за вход
-
-; --- Tavern / Scarab ---
-Gui, Add, GroupBox, x650 y225 w290 h100, Таверна / Игра скарабея
-Gui, Add, Checkbox, x665 y250 w250 vToken Checked%Token%, Use Tavern Tokens / Artifacts
-Gui, Add, Checkbox, x665 y275 w250 vBeer Checked%Beer%, Skip Claiming Beer
-Gui, Add, Checkbox, x665 y300 w250 vScarab Checked%Scarab%, Skip Using Scarab Token
-
-; --- Mission Priority Order ---
-Gui, Add, GroupBox, x650 y335 w290 h240, Приоритет поиска миссий
-Gui, Add, Checkbox, x665 y360 w250 vSearchMissoin Checked%SearchMissoin%, Искать и запускать миссии на карте
-
-PriorityList := "2 Squad|War|Medium|Short|Leftover"
-
-Gui, Add, Text, x665 y385 w60, 1st:
-Gui, Add, DropDownList, x730 y385 w180 vPriority1, %PriorityList%
-if (Priority1 != "")
-    GuiControl, ChooseString, Priority1, %Priority1%
-
-Gui, Add, Text, x665 y415 w60, 2nd:
-Gui, Add, DropDownList, x730 y415 w180 vPriority2, %PriorityList%
-if (Priority2 != "")
-    GuiControl, ChooseString, Priority2, %Priority2%
-
-Gui, Add, Text, x665 y445 w60, 3rd:
-Gui, Add, DropDownList, x730 y445 w180 vPriority3, %PriorityList%
-if (Priority3 != "")
-    GuiControl, ChooseString, Priority3, %Priority3%
-
-Gui, Add, Text, x665 y475 w60, 4th:
-Gui, Add, DropDownList, x730 y475 w180 vPriority4, %PriorityList%
-if (Priority4 != "")
-    GuiControl, ChooseString, Priority4, %Priority4%
-
-Gui, Add, Text, x665 y505 w60, 5th:
-Gui, Add, DropDownList, x730 y505 w180 vPriority5, %PriorityList%
-if (Priority5 != "")
-    GuiControl, ChooseString, Priority5, %Priority5%
-
-Gui, Add, Checkbox, x665 y540 w250 vMapReset Checked%MapReset%, Reset map cooldown with gems
-
-; ------------------------------------------------------------------------------
-; TAB 3: ГИЛЬДИЯ И ПЕРСОНАЛЬНОЕ ДРЕВО
-; ------------------------------------------------------------------------------
-Gui, Tab, 3
-    
-    ; ----- ЗАГОЛОВОК РАЗДЕЛА -----
-    Gui, Font, Bold
-    Gui, Add, Text, x20 y40 w900 h20 Center, ГИЛЬДИЯ И УПРАВЛЕНИЕ ГЕРОЯМИ
+    Gui, Add, GroupBox, x335 y70 w300 h160, % T("chestsGroup")
+    Gui, Add, Checkbox, x350 y90 w250 vChests Checked%Chests%, % T("openChests")
+    Gui, Add, Text, x350 y115 w250, % T("excludeGear")
+    Gui, Add, DropDownList, x350 y135 w250 vGearChestExclude, Exclude All|Don't Exclude Any|Epic and Higher|Legendary and Higher|Mythic||
+    if (GearChestExclude != "")
+        GuiControl, ChooseString, GearChestExclude, %GearChestExclude%
+    Gui, Add, Text, x350 y170 w250, % T("excludeJewel")
+    Gui, Add, DropDownList, x350 y190 w250 vJewelChestExclude, Exclude All|Don't Exclude Any|Diamond and Higher||Opal and Higher|Emerald
+    if (JewelChestExclude != "")
+        GuiControl, ChooseString, JewelChestExclude, %JewelChestExclude%
+    Gui, Add, GroupBox, x335 y240 w300 h80, % T("alchemyGroup")
+    Gui, Add, Checkbox, x350 y265 w250 vAlch Checked%Alch%, % T("skipAlchemy")
+    Gui, Font, Italic
+    Gui, Add, Text, x350 y285 w280 cGray, % T("alchemyHint")
     Gui, Font, Norm
-
-	; ----- БЛОК ГИЛЬДИИ -----
-	Gui, Add, GroupBox, x20 y60 w920 h100, Настройки гильдии
-
-	Gui, Add, Checkbox, x40 y90 w250 vNoGuild Checked%NoGuild%, (Общее) пропустить активности гильдии
-	Gui, Add, Checkbox, x370 y90 w200 vPickaxes Checked%Pickaxes%, НЕ получать бесплатные кирки
-	Gui, Add, Checkbox, x670 y90 w200 vCrystal Checked%Crystal%, Разбивать кристалл
-	Gui, Add, Checkbox, x370 y120 w200 vAwaken Checked%Awaken%, Пробуждать героев
-	Gui, Add, Checkbox, x670 y120 w200 vGNotif Checked%GNotif%, Очистить оповещения
-	
-	; Подсказка под мастер-кнопкой
-	Gui, Font, Italic s8, Segoe UI
-	Gui, Add, Text, x60 y105 w250 cGray, % "в том числе и запуск экспедиций"
-	Gui, Font, Norm s9, Segoe UI
-
-    ; ----- ПЕРСОНАЛЬНОЕ ДРЕВО -----
-    Gui, Font, Bold
-    Gui, Add, Text, x20 y180 w900 h20 Center, ПЕРСОНАЛЬНОЕ ДРЕВО (приоритет: сверху вниз)
+    Gui, Add, GroupBox, x335 y330 w300 h260, % T("heroGroup")
+    Gui, Add, Checkbox, x350 y350 w270 vNoHero Checked%NoHero%, % T("skipHeroes")
+    Gui, Add, Checkbox, x350 y375 w270 vNextMilestone Checked%NextMilestone%, % T("nextMilestone")
+    Gui, Font, Italic
+    Gui, Add, Text, x350 y390 w270 cGray, % T("heroHint")
     Gui, Font, Norm
-    
-    Gui, Add, Checkbox, x40 y200 vPTree Checked%PTree%, % "ВКЛЮЧИТЬ УЛУЧШЕНИЕ ДРЕВА"
+    Gui, Add, Text, x350 y460 w250, % T("chooseHeroes")
+    Gui, Add, Checkbox, x350 y480 w135 vUpgradeSpecial Checked%UpgradeSpecial%, % T("upgradeSpecial")
+    Gui, Add, Checkbox, x490 y480 w135 vUpgradeGuardian Checked%UpgradeGuardian%, % T("upgradeGuardians")
+    Gui, Add, Checkbox, x350 y505 w135 vUpgradeH1 Checked%UpgradeH1%, % T("upgradeH1")
+    Gui, Add, Checkbox, x490 y505 w135 vUpgradeH2 Checked%UpgradeH2%, % T("upgradeH2")
+    Gui, Add, Checkbox, x350 y530 w135 vUpgradeH3 Checked%UpgradeH3%, % T("upgradeH3")
+    Gui, Add, Checkbox, x490 y530 w135 vUpgradeH4 Checked%UpgradeH4%, % T("upgradeH4")
+    Gui, Add, Checkbox, x350 y555 w135 vUpgradeH5 Checked%UpgradeH5%, % T("upgradeH5")
 
-	; ----- КОЛОНКА 1: АТРИБУТЫ -----
-	Gui, Add, GroupBox, x40 y230 w280 h270, Атрибуты героев
-	Gui, Add, Checkbox, xp+15 yp+25 vAttDmg Checked%AttDmg%, Параметры урона
-	Gui, Add, Checkbox, y+8 vAttHp Checked%AttHp%, Параметры здоровья
-	Gui, Add, Checkbox, y+8 vAttArm Checked%AttArm%, Параметры брони
-	Gui, Add, Checkbox, y+8 vEnergy Checked%Energy%, Герои с энергией
-	Gui, Add, Checkbox, y+8 vMana Checked%Mana%, Герои с маной
-	Gui, Add, Checkbox, y+8 vRage Checked%Rage%, Герои с яростью
-	Gui, Add, Checkbox, y+8 vMainAtt Checked%MainAtt%, Все основные атрибуты
+    Gui, Add, GroupBox, x650 y70 w290 h150, % T("dailyGroup")
+    Gui, Add, Checkbox, x665 y90 w250 vMail Checked%Mail%, % T("mail")
+    Gui, Add, Checkbox, x665 y115 w250 vQuests Checked%Quests%, % T("quests")
+    Gui, Add, Checkbox, x665 y140 w250 vEvents Checked%Events%, % T("events")
+    Gui, Add, Checkbox, x665 y165 w250 vChaos Checked%Chaos%, % T("chaos")
+    Gui, Add, Checkbox, x665 y190 w250 vShop Checked%Shop%, % T("shopRewards")
+    Gui, Add, GroupBox, x650 y225 w290 h100, % T("tavernGroup")
+    Gui, Add, Checkbox, x665 y250 w250 vToken Checked%Token%, % T("tavernToken")
+    Gui, Add, Checkbox, x665 y275 w250 vBeer Checked%Beer%, % T("skipBeer")
+    Gui, Add, Checkbox, x665 y300 w250 vScarab Checked%Scarab%, % T("skipScarab")
+    Gui, Add, GroupBox, x650 y335 w290 h240, % T("missionGroup")
+    Gui, Add, Checkbox, x665 y360 w250 vSearchMissoin Checked%SearchMissoin%, % T("searchMission")
+    PriorityList := "2 Squad|War|Medium|Short|Leftover"
+    Gui, Add, Text, x665 y385 w60, 1st:
+    Gui, Add, DropDownList, x730 y385 w180 vPriority1, %PriorityList%
+    if (Priority1 != "")
+        GuiControl, ChooseString, Priority1, %Priority1%
+    Gui, Add, Text, x665 y415 w60, 2nd:
+    Gui, Add, DropDownList, x730 y415 w180 vPriority2, %PriorityList%
+    if (Priority2 != "")
+        GuiControl, ChooseString, Priority2, %Priority2%
+    Gui, Add, Text, x665 y445 w60, 3rd:
+    Gui, Add, DropDownList, x730 y445 w180 vPriority3, %PriorityList%
+    if (Priority3 != "")
+        GuiControl, ChooseString, Priority3, %Priority3%
+    Gui, Add, Text, x665 y475 w60, 4th:
+    Gui, Add, DropDownList, x730 y475 w180 vPriority4, %PriorityList%
+    if (Priority4 != "")
+        GuiControl, ChooseString, Priority4, %Priority4%
+    Gui, Add, Text, x665 y505 w60, 5th:
+    Gui, Add, DropDownList, x730 y505 w180 vPriority5, %PriorityList%
+    if (Priority5 != "")
+        GuiControl, ChooseString, Priority5, %Priority5%
+    Gui, Add, Checkbox, x665 y540 w250 vMapReset Checked%MapReset%, % T("mapReset")
 
-	; ----- КОЛОНКА 2: ОБЩИЕ ПАРАМЕТРЫ -----
-	Gui, Add, GroupBox, x340 y230 w280 h270, Общие параметры
-	Gui, Add, Checkbox, xp+15 yp+25 vMiner Checked%Miner%, Шахтёр (урон по кристаллу)
-	Gui, Add, Checkbox, y+8 vBattle Checked%Battle%, Боевой клич
-	Gui, Add, Checkbox, y+8 vPrest Checked%Prest%, Искатели Firestone
-	Gui, Add, Checkbox, y+8 vFire Checked%Fire%, Эффект Firestone
-	Gui, Add, Checkbox, y+8 vGold Checked%Gold%, Дождь из золота
-	Gui, Add, Checkbox, y+8 vLevel Checked%Level%, Цена повышения уровня героя
-	Gui, Add, Checkbox, y+8 vGuard Checked%Guard%, Сила стража
-
-	; ----- КОЛОНКА 3: БОЕВОЙ СТИЛЬ И СПЕЦИАЛИЗАЦИИ -----
-	Gui, Add, GroupBox, x640 y230 w280 h270, Боевой стиль / Специализации
-	Gui, Add, Checkbox, xp+15 yp+25 vFist Checked%Fist%, Кулачный бой
-	Gui, Add, Checkbox, y+8 vPrec Checked%Prec%, Точность
-	Gui, Add, Checkbox, y+8 vMagic Checked%Magic%, Заклинания
-	Gui, Add, Checkbox, y+8 vTank Checked%Tank%, Специализация Танка
-	Gui, Add, Checkbox, y+8 vDamage Checked%Damage%, Специализация Бойца
-	Gui, Add, Checkbox, y+8 vHeal Checked%Heal%, Специализация Целителя
-
-; ------------------------------------------------------------------------------
-; TAB 4: WAR MACHINES
-; ------------------------------------------------------------------------------
-Gui, Tab, 4
-
-    ; --- Misc ---
-    Gui, Add, GroupBox, x40 y50 w880 h120, Battle & Miscellaneous
-    
-    ; Первая строка чекбоксов
-    Gui, Add, Checkbox, x55 y80 w240 vPVP Checked%PVP%, Сражаться на арене королей (PvP)
-    Gui, Add, Checkbox, x305 y80 w240 vLiberation Checked%Liberation%, Выполнять освободительные миссии
-    Gui, Add, Checkbox, x555 y80 w240 vDungeonQuest Checked%DungeonQuest%, Выполнять миссии в подземелье
-    
-    ; Подсказка курсивом (под третьим чекбоксом)
+    Gui, Tab, 3
+    Gui, Font, Bold
+    Gui, Add, Text, x20 y40 w900 h20 Center, % T("guildHeader")
+    Gui, Font, Norm
+    Gui, Add, GroupBox, x20 y60 w920 h100, % T("guildSettings")
+    Gui, Add, Checkbox, x40 y90 w250 vNoGuild Checked%NoGuild%, % T("skipGuild")
+    Gui, Add, Checkbox, x370 y90 w200 vPickaxes Checked%Pickaxes%, % T("pickaxes")
+    Gui, Add, Checkbox, x670 y90 w200 vCrystal Checked%Crystal%, % T("crystal")
+    Gui, Add, Checkbox, x370 y120 w200 vAwaken Checked%Awaken%, % T("awaken")
+    Gui, Add, Checkbox, x670 y120 w200 vGNotif Checked%GNotif%, % T("guildNotif")
     Gui, Font, Italic s8, Segoe UI
-    Gui, Add, Text, x570 y105 w240 cGray, % "должны быть включены`nосвободительные миссии"
+    Gui, Add, Text, x60 y105 w250 cGray, % T("guildHint")
     Gui, Font, Norm s9, Segoe UI
-	
-    ; --- War Machines ---
-    Gui, Add, GroupBox, x40 y170 w880 h350, War Machines & Talents
-    Gui, Add, Text, xp+15 yp+30, War Machine to Upgrade:
+    Gui, Font, Bold
+    Gui, Add, Text, x20 y180 w900 h20 Center, % T("treeHeader")
+    Gui, Font, Norm
+    Gui, Add, Checkbox, x40 y200 vPTree Checked%PTree%, % T("enableTree")
+    Gui, Add, GroupBox, x40 y230 w280 h270, % T("treeAttrGroup")
+    Gui, Add, Checkbox, xp+15 yp+25 vAttDmg Checked%AttDmg%, % T("treeAttDmg")
+    Gui, Add, Checkbox, y+8 vAttHp Checked%AttHp%, % T("treeAttHp")
+    Gui, Add, Checkbox, y+8 vAttArm Checked%AttArm%, % T("treeAttArm")
+    Gui, Add, Checkbox, y+8 vEnergy Checked%Energy%, % T("treeEnergy")
+    Gui, Add, Checkbox, y+8 vMana Checked%Mana%, % T("treeMana")
+    Gui, Add, Checkbox, y+8 vRage Checked%Rage%, % T("treeRage")
+    Gui, Add, Checkbox, y+8 vMainAtt Checked%MainAtt%, % T("treeMainAtt")
+    Gui, Add, GroupBox, x340 y230 w280 h270, % T("treeGeneralGroup")
+    Gui, Add, Checkbox, xp+15 yp+25 vMiner Checked%Miner%, % T("treeMiner")
+    Gui, Add, Checkbox, y+8 vBattle Checked%Battle%, % T("treeBattle")
+    Gui, Add, Checkbox, y+8 vPrest Checked%Prest%, % T("treePrest")
+    Gui, Add, Checkbox, y+8 vFire Checked%Fire%, % T("treeFire")
+    Gui, Add, Checkbox, y+8 vGold Checked%Gold%, % T("treeGold")
+    Gui, Add, Checkbox, y+8 vLevel Checked%Level%, % T("treeLevel")
+    Gui, Add, Checkbox, y+8 vGuard Checked%Guard%, % T("treeGuard")
+    Gui, Add, GroupBox, x640 y230 w280 h270, % T("treeSpecGroup")
+    Gui, Add, Checkbox, xp+15 yp+25 vFist Checked%Fist%, % T("treeFist")
+    Gui, Add, Checkbox, y+8 vPrec Checked%Prec%, % T("treePrec")
+    Gui, Add, Checkbox, y+8 vMagic Checked%Magic%, % T("treeMagic")
+    Gui, Add, Checkbox, y+8 vTank Checked%Tank%, % T("treeTank")
+    Gui, Add, Checkbox, y+8 vDamage Checked%Damage%, % T("treeDamage")
+    Gui, Add, Checkbox, y+8 vHeal Checked%Heal%, % T("treeHeal")
+
+    Gui, Tab, 4
+    Gui, Add, GroupBox, x40 y50 w880 h120, % T("battleGroup")
+    Gui, Add, Checkbox, x55 y80 w240 vPVP Checked%PVP%, % T("pvp")
+    Gui, Add, Checkbox, x305 y80 w240 vLiberation Checked%Liberation%, % T("liberation")
+    Gui, Add, Checkbox, x555 y80 w240 vDungeonQuest Checked%DungeonQuest%, % T("dungeonQuest")
+    Gui, Font, Italic s8, Segoe UI
+    Gui, Add, Text, x570 y105 w240 cGray, % T("dungeonHint")
+    Gui, Font, Norm s9, Segoe UI
+    Gui, Add, GroupBox, x40 y170 w880 h350, % T("warMachinesGroup")
+    Gui, Add, Text, xp+15 yp+30, % T("upgradeWmLabel")
     Gui, Add, DropDownList, w350 vUpgradeWM, Don't Upgrade WM's||Upgrade Aegis|Upgrade Cloudfist|Upgrade Curator|Upgrade Earthshatterer|Upgrade FireCracker|Upgrade Fortress|Upgrade Goliath|Upgrade Harvester|Upgrade Hunter|Upgrade Judgement|Upgrade Sentinel|Upgrade Talos|Upgrade Thunderclap
     if (UpgradeWM != "")
         GuiControl, ChooseString, UpgradeWM, %UpgradeWM%
-
-    Gui, Add, Text, y+20, Upgrade Mode:
+    Gui, Add, Text, y+20, % T("upgradeModeLabel")
     Gui, Add, DropDownList, w350 vWMOptions, Blueprints Only||Level Only|Level and Blueprints|
     if (WMOptions != "")
         GuiControl, ChooseString, WMOptions, %WMOptions%
-
-    Gui, Add, Text, y+20, Blueprint Priority:
+    Gui, Add, Text, y+20, % T("blueprintPriorityLabel")
     Gui, Add, DropDownList, w350 vBlueprints, Upgrade All||Damage Only|Health Only|Armor Only|Damage and Health|Damage and Armor|Health and Armor
     if (Blueprints != "")
         GuiControl, ChooseString, Blueprints, %Blueprints%
-
-    ; --- Talents ---
-    Gui, Add, Text, x500 y200, Talent Options (Legacy/Specific):
+    Gui, Add, Text, x500 y200, % T("talentOptions")
     Gui, Add, DropDownList, x500 y225 w350 vTalents450, Don't Upgrade Talents (0-450 Talent Points)||
     if (Talents450 != "")
         GuiControl, ChooseString, Talents450, %Talents450%
-
     Gui, Add, DropDownList, x500 y280 w350 vTalents800, Don't Upgrade Talents (500+ Talent Points)||
     if (Talents800 != "")
         GuiControl, ChooseString, Talents800, %Talents800%
 
-
-; ------------------------------------------------------------------------------
-; TAB 5: SETTINGS
-; ------------------------------------------------------------------------------
-Gui, Tab, 5
+    Gui, Tab, 5
     Gui, Font, s10 Bold
-    Gui, Add, Text, x20 y40 w900 h30 Center, Разрешение экрана и границы
+    Gui, Add, Text, x20 y40 w900 h30 Center, % T("screenHeader")
     Gui, Font, Norm
-
-    ; --- Группа настроек ---
-    Gui, Add, GroupBox, x40 y80 w550 h380, Настройки границ окон
-
-    ; === Строка 1: ResXnew ===
-    Gui, Add, Text, x60 yp+30 w160, Разрешение экрана по X:
+    Gui, Add, GroupBox, x40 y80 w550 h380, % T("screenGroup")
+    Gui, Add, Text, x60 yp+30 w160, % T("resX")
     Gui, Add, Edit, x+10 w150 vResXnew, %ResXnew%
     Gui, Add, Text, x+10 w80, 1920 / 1360
-
-    ; === Строка 2: ResYnew ===
-    Gui, Add, Text, x60 y+25 w160, Разрешение экрана по Y:
+    Gui, Add, Text, x60 y+25 w160, % T("resY")
     Gui, Add, Edit, x+10 w150 vResYnew, %ResYnew%
     Gui, Add, Text, x+10 w80, 1080 / 768
-
-    ; === Строка 3: BorTop ===
-    Gui, Add, Text, x60 y+25 w160, Верхняя граница:
+    Gui, Add, Text, x60 y+25 w160, % T("borTop")
     Gui, Add, Edit, x+10 w150 vBorTop, %BorTop%
-    Gui, Add, Text, x+10 w170, Steam=22, Яндекс=111/135
-
-    ; === Строка 4: BorBot ===
-    Gui, Add, Text, x60 y+25 w160, Панель ПУСК:
+    Gui, Add, Text, x+10 w170, Steam=22, Yandex=111/135
+    Gui, Add, Text, x60 y+25 w160, % T("borBot")
     Gui, Add, Edit, x+10 w150 vBorBot, %BorBot%
     Gui, Add, Text, x+10 w170, Win11=48, Win10=40
-
-    ; Пояснение (курсив)
     Gui, Font, Italic
-    Gui, Add, Text, x60 y+25 w500, * Яндекс Браузер: 135 (с панелью закладок), 111 (без)
-    Gui, Font, Norm
+    Gui, Add, Text, x60 y+25 w500, % T("screenHint")
+    Gui, Font, Norm s9
+    Gui, Add, Text, x60 y+25 w500, % BuildDebugText()
+    Gui, Add, Button, x150 y500 w150 h45 gSaveSettings, % T("saveButton")
+    Gui, Add, Button, x330 y500 w150 h45 gButtonStart, % T("startButton")
 
-    ; Отладочная информация
-    Gui, Font, s9 Norm
-    Gui, Add, Text, x60 y+25 w500,
-    (Join`s`n
-	Проверка для отладки:
-Изменение по Х = %VarX%, Изменение по Y = %VarY% (не должны быть 0)
-Соотношение сторон (игрового поля) = %Ratio% (идеал = %RatioStand%)
-Данные обновляются после перезапуска программы
-    )
-
-    ; --- Кнопки ---
-    Gui, Add, Button, x150 y500 w150 h45 gSaveSettings, СОХРАНИТЬ
-    Gui, Add, Button, x330 y500 w150 h45 gButtonStart, ЗАПУСТИТЬ
-
-; ------------------------------------------------------------------------------
-; TAB 6: VERSION
-; ------------------------------------------------------------------------------
-Gui, Tab, 6
-
-    ; --- Заголовок ---
+    Gui, Tab, 6
     Gui, Font, s10 Bold
-    Gui, Add, Text, x40 y40 w880 Center, Версия %RusVer%:
+    Gui, Add, Text, x40 y40 w880 Center, % T("versionTitlePrefix") " " AppVersion ":"
     Gui, Font, Norm
-
-    ; --- Основные возможности ---
-    Gui, Add, Text, x40 y+15, Бот умеет:
-    Gui, Add, Text, x40 y+5, - забирать ежедневные подарки оракула
-    Gui, Add, Text, x40 y+5, - забирать ежедневные подарки магазина и награду за вход
-    Gui, Add, Text, x40 y+5, - тренировать выбранного стража
-    Gui, Add, Text, x40 y+5, - собирать запчасти у механика
-    Gui, Add, Text, x40 y+5, - запускать алхимика (использует только кровь дракона)
-    Gui, Add, Text, x40 y+5, - запускать ритуалы оракула 
-    Gui, Add, Text, x40 y+5, - начинать\завершать экспедиции гильдии
-    Gui, Add, Text, x40 y+5, - собирать кирки
-    Gui, Add, Text, x40 y+5, - собирать чертежи с карты
-    Gui, Add, Text, x40 y+5, - исследовать в библиотеке
-    Gui, Add, Text, x40 y+5, - завершать миссии на карте
-    Gui, Add, Text, x40 y+5, - искать и запускать новые миссии на карте
-    Gui, Add, Text, x40 y+5, - повышать уровень героев\стражей\спец улучшений на этапах (нужно доделать)
-    Gui, Add, Text, x40 y+5, - сражаться на арене, а так же выполнять миссии освобождения\подземелья (0.3.2)
-    Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо (0.3.3)
-    Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\еженедельные задания, проверять почту, забирать награды событий (0.3.4)
-
-    ; --- Шаблон: по идее работает, но не тестировал ---
+    Gui, Add, Text, x40 y+15, % T("versionCan")
+    Gui, Add, Text, x40 y+5, % T("versionCan1")
+    Gui, Add, Text, x40 y+5, % T("versionCan2")
+    Gui, Add, Text, x40 y+5, % T("versionCan3")
+    Gui, Add, Text, x40 y+5, % T("versionCan4")
+    Gui, Add, Text, x40 y+5, % T("versionCan5")
+    Gui, Add, Text, x40 y+5, % T("versionCan6")
+    Gui, Add, Text, x40 y+5, % T("versionCan7")
+    Gui, Add, Text, x40 y+5, % T("versionCan8")
+    Gui, Add, Text, x40 y+5, % T("versionCan9")
+    Gui, Add, Text, x40 y+5, % T("versionCan10")
+    Gui, Add, Text, x40 y+5, % T("versionCan11")
+    Gui, Add, Text, x40 y+5, % T("versionCan12")
+    Gui, Add, Text, x40 y+5, % T("versionCan13")
+    Gui, Add, Text, x40 y+5, % T("versionCan14")
+    Gui, Add, Text, x40 y+5, % T("versionCan15")
     Gui, Font, Bold
-    Gui, Add, Text, x40 y+15, по идее работает, но не тестировал (в яндекс играх):
+    Gui, Add, Text, x40 y+15, % T("versionUntested")
     Gui, Font, Norm
-    Gui, Add, Text, x40 y+5, - всё, что добавлено в версии 0.3.2 и выше (начиная со сражений на арене и далее по списку)
-    ;Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо
-    ;Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\ежнедельные задания, проверять почту, забирать награды событий (0.3.4)
-
-    ; --- Шаблон: не умеет ---
+    Gui, Add, Text, x40 y+5, % T("versionUntested1")
     Gui, Font, Bold
-    Gui, Add, Text, x40 y+15, не умеет:
+    Gui, Add, Text, x40 y+15, % T("versionCannot")
     Gui, Font, Norm
-    Gui, Add, Text, x40 y+5, - Открывать сундуки
-    Gui, Add, Text, x40 y+5, - улучшать Благословления оракула (0.3.5), так как нужно сначала научить открывать сундуки
-    ; Gui, Add, Text, x40 y+5, - пункт 3 (пример)
+    Gui, Add, Text, x40 y+5, % T("versionCannot1")
+    Gui, Add, Text, x40 y+5, % T("versionCannot2")
 
-    ; --- Отображение окна (уже есть в коде, оставляем как есть) ---
-    Gui, Show, w960 h620, Бот от Стаса на основе бота от Deaeth85 V6.1.0
-Return
+    Gui, Show, w960 h620, % T("windowTitle")
+}
 
-; ==============================================================================
-; FUNCTIONS & LABELS
-; ==============================================================================
+BuildDebugText() {
+    global VarX, VarY, Ratio, RatioStand
+    return T("debugTitle") . "`n"
+        . T("debugScaleX") . " = " . VarX . ", " . T("debugScaleY") . " = " . VarY . " " . T("debugNonZero") . "`n"
+        . T("debugRatio") . " = " . Ratio . " (" . T("debugIdeal") . " = " . RatioStand . ")`n"
+        . T("debugRefresh")
+}
+
+RecalculateDerivedSettings() {
+    global ResXnew, ResYnew, BorTop, BorBot, VarX, VarY, Ratio, RatioStand
+    if (ResXnew = "")
+        ResXnew := 1920
+    if (ResYnew = "")
+        ResYnew := 1080
+    if (BorTop = "")
+        BorTop := 22
+    if (BorBot = "")
+        BorBot := 48
+    VarX := (ResXnew / 1920)
+    VarY := ((ResYnew - BorTop - BorBot) / (1080 - 22 - 48))
+    Ratio := ResXnew / (ResYnew - BorBot - BorTop)
+    RatioStand := 1980 / (1080 - 22 - 48)
+}
+
+T(key) {
+    global UILanguage
+    static strings := ""
+    if !IsObject(strings) {
+        strings := {}
+        strings["tabHome"] := {ru: "Р“Р»Р°РІРЅР°СЏ", en: "Home"}
+        strings["tabGeneral"] := {ru: "РћР±С‰РёРµ РЅР°СЃС‚СЂРѕР№РєРё", en: "General Options"}
+        strings["tabGuild"] := {ru: "Р“РёР»СЊРґРёСЏ Рё Р»РёС‡РЅРѕРµ РґСЂРµРІРѕ", en: "Guild & Personal Tree"}
+        strings["tabWar"] := {ru: "Р‘РѕРµРІС‹Рµ РјР°С€РёРЅС‹", en: "War Machines"}
+        strings["tabScreen"] := {ru: "РќР°СЃС‚СЂРѕР№РєРё СЌРєСЂР°РЅР°", en: "Screen Settings"}
+        strings["tabVersion"] := {ru: "Р’РµСЂСЃРёСЏ", en: "Version"}
+        strings["languageLabel"] := {ru: "РЇР·С‹Рє:", en: "Language:"}
+        strings["windowTitle"] := {ru: "Р‘РѕС‚ РѕС‚ РЎС‚Р°СЃР° РЅР° РѕСЃРЅРѕРІРµ Р±РѕС‚Р° РѕС‚ Deaeth85 V6.1.0", en: "Stas Bot based on Deaeth85 Bot V6.1.0"}
+        strings["homeTitlePrefix"] := {ru: "РЇ С‚РІРѕР№ BOT version", en: "Firestone Bot version"}
+        strings["homeRequirements"] := {ru: "Р’Р°Р¶РЅС‹Рµ С‚СЂРµР±РѕРІР°РЅРёСЏ Рё РёРЅСЃС‚СЂСѓРєС†РёРё", en: "Important Requirements and Instructions"}
+        strings["homeSystemTitle"] := {ru: "РЎРёСЃС‚РµРјР° Рё РЅР°СЃС‚СЂРѕР№РєР° РёРіСЂС‹:", en: "System and Game Setup:"}
+        strings["homeSystem1"] := {ru: "вЂў Р’ Р±СЂР°СѓР·РµСЂРЅРѕР№ РІРµСЂСЃРёРё РѕРєРЅРѕ Р±СЂР°СѓР·РµСЂР° РґРѕР»Р¶РЅРѕ РЅР°С‡РёРЅР°С‚СЊСЃСЏ СЃ Р·Р°РіРѕР»РѕРІРєР° Firestone", en: "вЂў In the browser version, the browser window title must start with Firestone"}
+        strings["homeSystem2"] := {ru: "вЂў РўРёРї РёРЅС‚РµСЂС„РµР№СЃР°: РјРѕР±РёР»СЊРЅР°СЏ РёР»Рё РџРљ РІРµСЂСЃРёСЏ (РЅРѕРІС‹Р№ СЃС‚РёР»СЊ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ)", en: "вЂў Interface type: Mobile or PC version (the new style is not supported)"}
+        strings["homeSystem3"] := {ru: "вЂў РЇР·С‹Рє РІ РёРіСЂРµ: English (СЂСѓСЃСЃРєРёР№ РёРЅС‚РµСЂС„РµР№СЃ РЅРµ С‚РµСЃС‚РёСЂРѕРІР°Р»СЃСЏ, РЅРѕ РґРѕР»Р¶РµРЅ СЂР°Р±РѕС‚Р°С‚СЊ РёСЃРїСЂР°РІРЅРѕ)", en: "вЂў In-game language: English (the Russian game interface was not tested, but it should work)"}
+        strings["homeSystem4"] := {ru: "вЂў Р Р°СЃРєР»Р°РґРєР° РєР»Р°РІРёР°С‚СѓСЂС‹: РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ Р°РЅРіР»РёР№СЃРєР°СЏ (РІ Р±СѓРґСѓС‰РµРј СѓР±РµСЂС‘Рј СЌС‚Сѓ РїСЂРёРІСЏР·РєСѓ)", en: "вЂў Keyboard layout: must be English (this dependency may be removed later)"}
+        strings["homeSystem5"] := {ru: "вЂў Р РµР¶РёРј РѕРєРЅР°: РѕРєРѕРЅРЅС‹Р№, РїР°РЅРµР»СЊ РџРЈРЎРљ РЅРµ СЃРєСЂС‹С‚Р° (РїРѕР»РЅРѕСЌРєСЂР°РЅРЅС‹Р№ СЂРµР¶РёРј РЅРµСЃС‚Р°Р±РёР»РµРЅ)", en: "вЂў Window mode: windowed, taskbar visible (fullscreen mode is unstable)"}
+        strings["homeSystem6"] := {ru: "вЂў Р’РєР»СЋС‡Рё В«РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ СЃР°РјРѕС†РІРµС‚РѕРІВ» (РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№)", en: "вЂў Enable gem-use confirmation, just to be safe"}
+        strings["homeSystem7"] := {ru: "вЂў (Р РµРґРєРѕРµ) РњР°СЃС€С‚Р°Р± СЌРєСЂР°РЅР°: 100% (РІ РїР°СЂР°РјРµС‚СЂР°С… РґРёСЃРїР»РµСЏ Windows)", en: "вЂў (Rare) Display scaling: 100% in Windows display settings"}
+        strings["homeSetupTitle"] := {ru: "РќР°СЃС‚СЂРѕР№РєР° Рё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ Р±РѕС‚Р°:", en: "Bot Setup and Usage:"}
+        strings["homeSetup1"] := {ru: "вЂў РќР° РІРєР»Р°РґРєРµ В«РќР°СЃС‚СЂРѕР№РєРё СЌРєСЂР°РЅР°В» СѓРєР°Р¶Рё РїР°СЂР°РјРµС‚СЂС‹ СЌРєСЂР°РЅР° Рё РІРµСЂС…РЅСЋСЋ/РЅРёР¶РЅСЋСЋ РіСЂР°РЅРёС†С‹ РёРіСЂРѕРІРѕРіРѕ РїРѕР»СЏ", en: "вЂў On the Screen Settings tab, enter your screen size and the top/bottom borders of the game area"}
+        strings["homeSetup2"] := {ru: "вЂў ESC вЂ” РѕСЃС‚Р°РЅРѕРІРєР° Р±РѕС‚Р°", en: "вЂў Press ESC to stop the bot"}
+        strings["homeSetup3"] := {ru: "вЂў Р•СЃР»Рё С‚РµРєСЃС‚ РїРµСЂРµРІРµРґС‘РЅ, С„СѓРЅРєС†РёСЏ Р°РєС‚РёРІРЅР°. Р•СЃР»Рё РЅРµС‚ вЂ” Р»СѓС‡С€Рµ РѕС‚РєР»СЋС‡РёС‚СЊ", en: "вЂў If the text is translated, the feature is active. If not, it is safer to disable it"}
+        strings["homeSetup4"] := {ru: "вЂў РќРµ РїРµСЂРµРјРµС‰Р°Р№ РєР°СЂС‚Сѓ РјРёСЃСЃРёР№ Рё РЅРµ РёСЃРїРѕР»СЊР·СѓР№ Р·СѓРј. Р•СЃР»Рё СЃР»СѓС‡Р°Р№РЅРѕ СЃРґРІРёРЅСѓР» вЂ” РїРµСЂРµР·Р°Р№РґРё РІ РёРіСЂСѓ", en: "вЂў Do not move the mission map or use zoom. If you did, reopen the game"}
+        strings["homeKnownTitle"] := {ru: "РР·РІРµСЃС‚РЅС‹Рµ РѕС€РёР±РєРё:", en: "Known Issues:"}
+        strings["homeKnown1"] := {ru: "вЂў Р•СЃР»Рё СЃРѕРѕС‚РЅРѕС€РµРЅРёРµ СЃС‚РѕСЂРѕРЅ РёРіСЂРѕРІРѕРіРѕ РїРѕР»СЏ СЃРёР»СЊРЅРѕ РѕС‚Р»РёС‡Р°РµС‚СЃСЏ РѕС‚ РёРґРµР°Р»Р° (~1.96), Р±РѕС‚ РјРѕР¶РµС‚ РїСЂРѕРјР°С…РёРІР°С‚СЊСЃСЏ РїРѕ РєРЅРѕРїРєР°Рј.", en: "вЂў If the game-area aspect ratio is far from the ideal (~1.96), the bot may miss buttons."}
+        strings["homeKnown2"] := {ru: "  РўРµРєСѓС‰РµРµ СЃРѕРѕС‚РЅРѕС€РµРЅРёРµ РІРёРґРЅРѕ РЅР° РІРєР»Р°РґРєРµ В«РќР°СЃС‚СЂРѕР№РєРё СЌРєСЂР°РЅР°В». Р’С‹С€Рµ 2.1 РјРѕРіСѓС‚ Р±С‹С‚СЊ РїСЂРѕР±Р»РµРјС‹", en: "  You can see the current ratio on the Screen Settings tab. Ratios above 2.1 may cause issues"}
+        strings["homeKnown3"] := {ru: "вЂў РџСЂРё РїРѕРёСЃРєРµ РјРёСЃСЃРёР№ РґР»СЏ РґРІСѓС… РѕС‚СЂСЏРґРѕРІ (2 Squad) РјРѕР¶РµС‚ Р·Р°РґРµС‚СЊ РєРЅРѕРїРєРё РїРѕРєСѓРїРєРё СЃР»Р°РІС‹/РѕС‚СЂСЏРґР°", en: "вЂў When searching for 2 Squad missions, it may hit glory/squad purchase buttons"}
+        strings["homeKnown4"] := {ru: "  Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РїСЂРё РїРµСЂРІРѕРј Р·Р°РїСѓСЃРєРµ РїСЂРѕСЃР»РµРґРёС‚СЊ РїРµСЂРІС‹Рµ 10-15 РєР»РёРєРѕРІ РЅР° РєР°СЂС‚Рµ", en: "  It is recommended to watch the first 10-15 clicks on the map during the first run"}
+        strings["homeKnown5"] := {ru: "вЂў РћРїС†РёСЏ В«РЈР»СѓС‡С€Р°С‚СЊ РґРѕ РјР°РєСЃ СѓСЂРѕРІРЅСЏВ» СЂР°Р±РѕС‚Р°РµС‚ РЅРµРїСЂР°РІРёР»СЊРЅРѕ", en: "вЂў The 'Upgrade to max level' option does not work correctly"}
+        strings["homeKnown6"] := {ru: "  РџРµСЂРµРґ Р·Р°РїСѓСЃРєРѕРј Р±РѕС‚Р° РІ РѕРєРЅРµ СѓСЃРёР»РµРЅРёСЏ РіРµСЂРѕРµРІ РїРѕСЃС‚Р°РІСЊ В«СѓСЃРёР»РёС‚СЊ РјР°РєСЃВ»", en: "  Before starting the bot, set hero upgrades to 'upgrade max' in the game"}
+        strings["homeKnown7"] := {ru: "вЂў Р‘РѕС‚ РјРѕР¶РµС‚ РєР»РёРєР°С‚СЊ РЅРµ РІ РѕРєРЅРµ РёРіСЂС‹, Р° РІ РґСЂСѓРіРѕРј", en: "вЂў The bot may click in another window instead of the game window"}
+        strings["homeKnown8"] := {ru: "  Р­С‚Рѕ СЃРІСЏР·Р°РЅРѕ СЃ С‚РµРј, С‡С‚Рѕ Р±РѕС‚ РёС‰РµС‚ Р°РєС‚РёРІРЅРѕРµ РѕРєРЅРѕ СЃ Р·Р°РіРѕР»РѕРІРєРѕРј, РЅР°С‡РёРЅР°СЋС‰РёРјСЃСЏ СЃ Firestone", en: "  This happens because the bot looks for an active window with a title starting with Firestone"}
+        strings["homeKnown9"] := {ru: "  Р•СЃР»Рё РёРіСЂР° СЃРІРµСЂРЅСѓС‚Р° РёР»Рё РµСЃС‚СЊ РґСЂСѓРіРѕРµ РїРѕС…РѕР¶РµРµ РѕРєРЅРѕ, Р±РѕС‚ РјРѕР¶РµС‚ РЅРµ РЅР°Р№С‚Рё РёРіСЂСѓ", en: "  If the game is minimized or another similar window exists, the bot may fail to find the game"}
+        strings["homeWarning"] := {ru: "(Р’РђР–РќРћ) РџРµСЂРІС‹Р№ Р·Р°РїСѓСЃРє Р»СѓС‡С€Рµ РєРѕРЅС‚СЂРѕР»РёСЂРѕРІР°С‚СЊ РІСЂСѓС‡РЅСѓСЋ: РїРѕСЃРјРѕС‚СЂРё РїР°СЂСѓ С†РёРєР»РѕРІ, РІСЃС‘ Р»Рё Р±РѕС‚ РґРµР»Р°РµС‚ РїСЂР°РІРёР»СЊРЅРѕ", en: "(IMPORTANT) Watch the first run manually for a couple of cycles to confirm everything works correctly"}
+        strings["saveButton"] := {ru: "РЎРћРҐР РђРќРРўР¬", en: "SAVE"}
+        strings["startBotButton"] := {ru: "Р—РђРџРЈРЎРўРРўР¬ Р‘РћРўРђ", en: "START BOT"}
+        strings["startButton"] := {ru: "Р—РђРџРЈРЎРўРРўР¬", en: "START"}
+        strings["generalHeader"] := {ru: "РћР‘Р©РР• РќРђРЎРўР РћР™РљР", en: "GENERAL OPTIONS"}
+        strings["sellingGroup"] := {ru: "РџСЂРѕРґР°Р¶Р° Рё СЌРєР·РѕС‚РёС‡РµСЃРєРёР№ С‚РѕСЂРіРѕРІРµС†", en: "Selling & Exotic Merchant"}
+        strings["sellEx"] := {ru: "РћС‚РєСЂС‹РІР°С‚СЊ СЌРєР·РѕС‚РёС‡РµСЃРєРѕРіРѕ С‚РѕСЂРіРѕРІС†Р° (Master)", en: "Open Exotic Merchant (Master)"}
+        strings["exoticUpgrades"] := {ru: "РџРѕРєСѓРїР°С‚СЊ СЌРєР·РѕС‚РёС‡РµСЃРєРёРµ СѓР»СѓС‡С€РµРЅРёСЏ", en: "Buy Exotic Upgrades"}
+        strings["buyEx"] := {ru: "РџРѕРєСѓРїР°С‚СЊ СЌРєР·РѕС‚РёС‡РµСЃРєРёРµ СЃСѓРЅРґСѓРєРё", en: "Buy Exotic Chests"}
+        strings["sellingStrategy"] := {ru: "РЎС‚СЂР°С‚РµРіРёСЏ РїСЂРѕРґР°Р¶Рё:", en: "Selling Strategy:"}
+        strings["sellScrolls"] := {ru: "1. РџСЂРѕРґР°РІР°С‚СЊ С‚РѕР»СЊРєРѕ Exotic Scrolls", en: "1. Sell ONLY Exotic Scrolls"}
+        strings["sellNoGold"] := {ru: "2. РџСЂРѕРґР°РІР°С‚СЊ РІСЃС‘, РєСЂРѕРјРµ Gold Items", en: "2. Sell All But Gold Items"}
+        strings["sellAll"] := {ru: "3. РџСЂРѕРґР°РІР°С‚СЊ РІСЃРµ Exotic Items", en: "3. Sell All Exotic Items"}
+        strings["sellNone"] := {ru: "4. РќРёС‡РµРіРѕ РЅРµ РїСЂРѕРґР°РІР°С‚СЊ", en: "4. Sell Nothing"}
+        strings["automationGroup"] := {ru: "РџСЂРѕС‡РёРµ Р°РІС‚РѕРјР°С‚РёР·Р°С†РёРё", en: "Other Automation"}
+        strings["skipEngineer"] := {ru: "РџСЂРѕРїСѓСЃС‚РёС‚СЊ РјРµС…Р°РЅРёРєР°", en: "Skip Engineer"}
+        strings["skipResearch"] := {ru: "РџСЂРѕРїСѓСЃС‚РёС‚СЊ РёСЃСЃР»РµРґРѕРІР°РЅРёСЏ", en: "Skip Research"}
+        strings["disableSteamWarning"] := {ru: "РћС‚РєР»СЋС‡РёС‚СЊ Steam warning", en: "Disable Steam Warning"}
+        strings["guardianTrain"] := {ru: "РўСЂРµРЅРёСЂРѕРІР°С‚СЊ СЃС‚СЂР°Р¶Р°:", en: "Train Guardian:"}
+        strings["oracleGroup"] := {ru: "РћСЂР°РєСѓР»", en: "Oracle"}
+        strings["blessings"] := {ru: "(РЅРµ СЂР°Р±РѕС‚Р°РµС‚) РЈР»СѓС‡С€Р°С‚СЊ Р±Р»Р°РіРѕСЃР»РѕРІРµРЅРёСЏ", en: "(does not work) Upgrade Blessings"}
+        strings["dailyOracle"] := {ru: "Р—Р°Р±РёСЂР°С‚СЊ РµР¶РµРґРЅРµРІРЅС‹Рµ РЅР°РіСЂР°РґС‹ РѕСЂР°РєСѓР»Р°", en: "Claim Daily Oracle Rewards"}
+        strings["skipOracle"] := {ru: "(РѕР±С‰РµРµ) РїСЂРѕРїСѓСЃС‚РёС‚СЊ РѕСЂР°РєСѓР»Р°", en: "(global) Skip Oracle"}
+        strings["delayGroup"] := {ru: "РџР°СѓР·Р° РјРµР¶РґСѓ С†РёРєР»Р°РјРё Р±РѕС‚Р°", en: "Delay Between Bot Cycles"}
+        strings["delayLabel"] := {ru: "РџРµСЂРµСЂС‹РІ (СЃРµРєСѓРЅРґ):", en: "Break (seconds):"}
+        strings["chestsGroup"] := {ru: "РЎСѓРЅРґСѓРєРё Рё РЅР°РіСЂР°РґС‹", en: "Chests & Rewards"}
+        strings["openChests"] := {ru: "РћС‚РєСЂС‹РІР°С‚СЊ СЃСѓРЅРґСѓРєРё (РѕР±С‰РµРµ)", en: "Open Chests (General)"}
+        strings["excludeGear"] := {ru: "РСЃРєР»СЋС‡РёС‚СЊ СЃСѓРЅРґСѓРєРё СЃ СЌРєРёРїРёСЂРѕРІРєРѕР№:", en: "Exclude Gear Chests:"}
+        strings["excludeJewel"] := {ru: "РСЃРєР»СЋС‡РёС‚СЊ СЃСѓРЅРґСѓРєРё СЃ СЃР°РјРѕС†РІРµС‚Р°РјРё:", en: "Exclude Jewel Chests:"}
+        strings["alchemyGroup"] := {ru: "РђР»С…РёРјРёСЏ", en: "Alchemy"}
+        strings["skipAlchemy"] := {ru: "РџСЂРѕРїСѓСЃС‚РёС‚СЊ Р°Р»С…РёРјРёСЋ", en: "Skip Alchemy"}
+        strings["alchemyHint"] := {ru: "Р·Р°РїСѓСЃРєР°РµС‚ Р°Р»С…РёРјРёСЋ С‚РѕР»СЊРєРѕ Р·Р° РєСЂРѕРІСЊ РґСЂР°РєРѕРЅР°", en: "runs alchemy only with Dragon Blood"}
+        strings["heroGroup"] := {ru: "РЈР»СѓС‡С€РµРЅРёРµ РіРµСЂРѕРµРІ РЅР° СЌС‚Р°РїР°С…", en: "Hero Upgrades on Stages"}
+        strings["skipHeroes"] := {ru: "(РѕР±С‰РµРµ) РЅРµ СѓР»СѓС‡С€Р°С‚СЊ РіРµСЂРѕРµРІ", en: "(global) Do Not Upgrade Heroes"}
+        strings["nextMilestone"] := {ru: "(РќР• Р РђР‘РћРўРђР•Рў) РЈР»СѓС‡С€Р°С‚СЊ РґРѕ РјР°РєСЃ СѓСЂРѕРІРЅСЏ", en: "(DOES NOT WORK) Upgrade to Max Level"}
+        strings["heroHint"] := {ru: "Р•СЃР»Рё РІС‹РєР»СЋС‡РµРЅРѕ, Р±РѕС‚ СѓР»СѓС‡С€Р°РµС‚ РєР°Р¶РґРѕРіРѕ РіРµСЂРѕСЏ/СЃС‚СЂР°Р¶Р° РїРѕ РѕРґРЅРѕРјСѓ СЂР°Р·Сѓ Р·Р° РєСЂСѓРі. РџРµСЂРµРґ СЃС‚Р°СЂС‚РѕРј Р»СѓС‡С€Рµ РІС‹СЃС‚Р°РІРёС‚СЊ В«СѓСЃРёР»РёС‚СЊ РјР°РєСЃВ».", en: "If disabled, the bot upgrades each hero/guardian once per cycle. It is better to set the game to 'upgrade max' before starting."}
+        strings["chooseHeroes"] := {ru: "Р’С‹Р±РµСЂРёС‚Рµ РіРµСЂРѕРµРІ РґР»СЏ СѓР»СѓС‡С€РµРЅРёСЏ:", en: "Choose heroes to upgrade:"}
+        strings["upgradeSpecial"] := {ru: "РћР±С‰РёРµ", en: "General"}
+        strings["upgradeGuardians"] := {ru: "РЎС‚СЂР°Р¶Рё", en: "Guardians"}
+        strings["upgradeH1"] := {ru: "Р“РµСЂРѕР№ РЅР° РїРѕР·РёС†РёРё 1", en: "Hero in slot 1"}
+        strings["upgradeH2"] := {ru: "Р“РµСЂРѕР№ РЅР° РїРѕР·РёС†РёРё 2", en: "Hero in slot 2"}
+        strings["upgradeH3"] := {ru: "Р“РµСЂРѕР№ РЅР° РїРѕР·РёС†РёРё 3", en: "Hero in slot 3"}
+        strings["upgradeH4"] := {ru: "Р“РµСЂРѕР№ РЅР° РїРѕР·РёС†РёРё 4", en: "Hero in slot 4"}
+        strings["upgradeH5"] := {ru: "Р“РµСЂРѕР№ РЅР° РїРѕР·РёС†РёРё 5", en: "Hero in slot 5"}
+        strings["dailyGroup"] := {ru: "Р•Р¶РµРґРЅРµРІРЅС‹Рµ РЅР°РіСЂР°РґС‹", en: "Daily Rewards"}
+        strings["mail"] := {ru: "РџСЂРѕРІРµСЂСЏС‚СЊ/С‡РёСЃС‚РёС‚СЊ РїРѕС‡С‚Сѓ", en: "Check and Clear Mail"}
+        strings["quests"] := {ru: "Р—Р°Р±РёСЂР°С‚СЊ РЅР°РіСЂР°РґС‹ РІ РєРІРµСЃС‚Р°С… (РґРЅСЏ/РЅРµРґРµР»Рё)", en: "Claim Quest Rewards (daily/weekly)"}
+        strings["events"] := {ru: "Р—Р°Р±РёСЂР°С‚СЊ РЅР°РіСЂР°РґС‹ РІ СЃРѕР±С‹С‚РёСЏС…", en: "Claim Event Rewards"}
+        strings["chaos"] := {ru: "РЈС‡Р°СЃС‚РІРѕРІР°С‚СЊ РІ СЂР°Р·Р»РѕРјРµ С…Р°РѕСЃР°", en: "Join Chaos Rift"}
+        strings["shopRewards"] := {ru: "РџРѕРґР°СЂРєРё РјР°РіР°Р·РёРЅР° Рё РЅР°РіСЂР°РґС‹ Р·Р° РІС…РѕРґ", en: "Shop Gifts and Login Rewards"}
+        strings["tavernGroup"] := {ru: "РўР°РІРµСЂРЅР° / РРіСЂР° СЃРєР°СЂР°Р±РµСЏ", en: "Tavern / Scarab Game"}
+        strings["tavernToken"] := {ru: "РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ tavern tokens / artifacts", en: "Use Tavern Tokens / Artifacts"}
+        strings["skipBeer"] := {ru: "РџСЂРѕРїСѓСЃС‚РёС‚СЊ РїРѕР»СѓС‡РµРЅРёРµ РїРёРІР°", en: "Skip Claiming Beer"}
+        strings["skipScarab"] := {ru: "РџСЂРѕРїСѓСЃС‚РёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ scarab token", en: "Skip Using Scarab Token"}
+        strings["missionGroup"] := {ru: "РџСЂРёРѕСЂРёС‚РµС‚ РїРѕРёСЃРєР° РјРёСЃСЃРёР№", en: "Mission Search Priority"}
+        strings["searchMission"] := {ru: "РСЃРєР°С‚СЊ Рё Р·Р°РїСѓСЃРєР°С‚СЊ РјРёСЃСЃРёРё РЅР° РєР°СЂС‚Рµ", en: "Search and start missions on the map"}
+        strings["mapReset"] := {ru: "РЎР±СЂР°СЃС‹РІР°С‚СЊ РѕС‚РєР°С‚ РєР°СЂС‚С‹ Р·Р° СЃР°РјРѕС†РІРµС‚С‹", en: "Reset map cooldown with gems"}
+        strings["guildHeader"] := {ru: "Р“РР›Р¬Р”РРЇ Р РЈРџР РђР’Р›Р•РќРР• Р“Р•Р РћРЇРњР", en: "GUILD AND HERO MANAGEMENT"}
+        strings["guildSettings"] := {ru: "РќР°СЃС‚СЂРѕР№РєРё РіРёР»СЊРґРёРё", en: "Guild Settings"}
+        strings["skipGuild"] := {ru: "(РѕР±С‰РµРµ) РїСЂРѕРїСѓСЃС‚РёС‚СЊ Р°РєС‚РёРІРЅРѕСЃС‚Рё РіРёР»СЊРґРёРё", en: "(global) Skip Guild Activities"}
+        strings["pickaxes"] := {ru: "РќР• РїРѕР»СѓС‡Р°С‚СЊ Р±РµСЃРїР»Р°С‚РЅС‹Рµ РєРёСЂРєРё", en: "Do NOT claim free pickaxes"}
+        strings["crystal"] := {ru: "Р Р°Р·Р±РёРІР°С‚СЊ РєСЂРёСЃС‚Р°Р»Р»", en: "Break Crystal"}
+        strings["awaken"] := {ru: "РџСЂРѕР±СѓР¶РґР°С‚СЊ РіРµСЂРѕРµРІ", en: "Awaken Heroes"}
+        strings["guildNotif"] := {ru: "РћС‡РёСЃС‚РёС‚СЊ РѕРїРѕРІРµС‰РµРЅРёСЏ", en: "Clear Notifications"}
+        strings["guildHint"] := {ru: "РІ С‚РѕРј С‡РёСЃР»Рµ Рё Р·Р°РїСѓСЃРє СЌРєСЃРїРµРґРёС†РёР№", en: "includes starting expeditions"}
+        strings["treeHeader"] := {ru: "РџР•Р РЎРћРќРђР›Р¬РќРћР• Р”Р Р•Р’Рћ (РїСЂРёРѕСЂРёС‚РµС‚: СЃРІРµСЂС…Сѓ РІРЅРёР·)", en: "PERSONAL TREE (priority: top to bottom)"}
+        strings["enableTree"] := {ru: "Р’РљР›Р®Р§РРўР¬ РЈР›РЈР§РЁР•РќРР• Р”Р Р•Р’Рђ", en: "ENABLE TREE UPGRADING"}
+        strings["treeAttrGroup"] := {ru: "РђС‚СЂРёР±СѓС‚С‹ РіРµСЂРѕРµРІ", en: "Hero Attributes"}
+        strings["treeAttDmg"] := {ru: "РџР°СЂР°РјРµС‚СЂС‹ СѓСЂРѕРЅР°", en: "Damage Attributes"}
+        strings["treeAttHp"] := {ru: "РџР°СЂР°РјРµС‚СЂС‹ Р·РґРѕСЂРѕРІСЊСЏ", en: "Health Attributes"}
+        strings["treeAttArm"] := {ru: "РџР°СЂР°РјРµС‚СЂС‹ Р±СЂРѕРЅРё", en: "Armor Attributes"}
+        strings["treeEnergy"] := {ru: "Р“РµСЂРѕРё СЃ СЌРЅРµСЂРіРёРµР№", en: "Energy Heroes"}
+        strings["treeMana"] := {ru: "Р“РµСЂРѕРё СЃ РјР°РЅРѕР№", en: "Mana Heroes"}
+        strings["treeRage"] := {ru: "Р“РµСЂРѕРё СЃ СЏСЂРѕСЃС‚СЊСЋ", en: "Rage Heroes"}
+        strings["treeMainAtt"] := {ru: "Р’СЃРµ РѕСЃРЅРѕРІРЅС‹Рµ Р°С‚СЂРёР±СѓС‚С‹", en: "All Main Attributes"}
+        strings["treeGeneralGroup"] := {ru: "РћР±С‰РёРµ РїР°СЂР°РјРµС‚СЂС‹", en: "General Parameters"}
+        strings["treeMiner"] := {ru: "РЁР°С…С‚С‘СЂ (СѓСЂРѕРЅ РїРѕ РєСЂРёСЃС‚Р°Р»Р»Сѓ)", en: "Miner (crystal damage)"}
+        strings["treeBattle"] := {ru: "Р‘РѕРµРІРѕР№ РєР»РёС‡", en: "Battle Cry"}
+        strings["treePrest"] := {ru: "РСЃРєР°С‚РµР»Рё Firestone", en: "Firestone Seekers"}
+        strings["treeFire"] := {ru: "Р­С„С„РµРєС‚ Firestone", en: "Firestone Effect"}
+        strings["treeGold"] := {ru: "Р”РѕР¶РґСЊ РёР· Р·РѕР»РѕС‚Р°", en: "Gold Rain"}
+        strings["treeLevel"] := {ru: "Р¦РµРЅР° РїРѕРІС‹С€РµРЅРёСЏ СѓСЂРѕРІРЅСЏ РіРµСЂРѕСЏ", en: "Hero Level Up Cost"}
+        strings["treeGuard"] := {ru: "РЎРёР»Р° СЃС‚СЂР°Р¶Р°", en: "Guardian Power"}
+        strings["treeSpecGroup"] := {ru: "Р‘РѕРµРІРѕР№ СЃС‚РёР»СЊ / РЎРїРµС†РёР°Р»РёР·Р°С†РёРё", en: "Combat Style / Specializations"}
+        strings["treeFist"] := {ru: "РљСѓР»Р°С‡РЅС‹Р№ Р±РѕР№", en: "Fist Fighting"}
+        strings["treePrec"] := {ru: "РўРѕС‡РЅРѕСЃС‚СЊ", en: "Precision"}
+        strings["treeMagic"] := {ru: "Р—Р°РєР»РёРЅР°РЅРёСЏ", en: "Spells"}
+        strings["treeTank"] := {ru: "РЎРїРµС†РёР°Р»РёР·Р°С†РёСЏ РўР°РЅРєР°", en: "Tank Specialization"}
+        strings["treeDamage"] := {ru: "РЎРїРµС†РёР°Р»РёР·Р°С†РёСЏ Р‘РѕР№С†Р°", en: "Fighter Specialization"}
+        strings["treeHeal"] := {ru: "РЎРїРµС†РёР°Р»РёР·Р°С†РёСЏ Р¦РµР»РёС‚РµР»СЏ", en: "Healer Specialization"}
+        strings["battleGroup"] := {ru: "РЎСЂР°Р¶РµРЅРёСЏ Рё РїСЂРѕС‡РµРµ", en: "Battle & Miscellaneous"}
+        strings["pvp"] := {ru: "РЎСЂР°Р¶Р°С‚СЊСЃСЏ РЅР° Р°СЂРµРЅРµ РєРѕСЂРѕР»РµР№ (PvP)", en: "Fight in Kings Arena (PvP)"}
+        strings["liberation"] := {ru: "Р’С‹РїРѕР»РЅСЏС‚СЊ РѕСЃРІРѕР±РѕРґРёС‚РµР»СЊРЅС‹Рµ РјРёСЃСЃРёРё", en: "Run Liberation Missions"}
+        strings["dungeonQuest"] := {ru: "Р’С‹РїРѕР»РЅСЏС‚СЊ РјРёСЃСЃРёРё РІ РїРѕРґР·РµРјРµР»СЊРµ", en: "Run Dungeon Missions"}
+        strings["dungeonHint"] := {ru: "РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РІРєР»СЋС‡РµРЅС‹ РѕСЃРІРѕР±РѕРґРёС‚РµР»СЊРЅС‹Рµ РјРёСЃСЃРёРё", en: "Liberation Missions must also be enabled"}
+        strings["warMachinesGroup"] := {ru: "Р‘РѕРµРІС‹Рµ РјР°С€РёРЅС‹ Рё С‚Р°Р»Р°РЅС‚С‹", en: "War Machines & Talents"}
+        strings["upgradeWmLabel"] := {ru: "Р‘РѕeРІР°СЏ РјР°С€РёРЅР° РґР»СЏ СѓР»СѓС‡С€РµРЅРёСЏ:", en: "War Machine to Upgrade:"}
+        strings["upgradeModeLabel"] := {ru: "Р РµР¶РёРј СѓР»СѓС‡С€РµРЅРёСЏ:", en: "Upgrade Mode:"}
+        strings["blueprintPriorityLabel"] := {ru: "РџСЂРёРѕСЂРёС‚РµС‚ С‡РµСЂС‚РµР¶РµР№:", en: "Blueprint Priority:"}
+        strings["talentOptions"] := {ru: "РћРїС†РёРё С‚Р°Р»Р°РЅС‚РѕРІ (legacy/specific):", en: "Talent Options (Legacy/Specific):"}
+        strings["screenHeader"] := {ru: "Р Р°Р·СЂРµС€РµРЅРёРµ СЌРєСЂР°РЅР° Рё РіСЂР°РЅРёС†С‹", en: "Screen Resolution and Borders"}
+        strings["screenGroup"] := {ru: "РќР°СЃС‚СЂРѕР№РєРё РіСЂР°РЅРёС† РѕРєРЅР°", en: "Window Border Settings"}
+        strings["resX"] := {ru: "Р Р°Р·СЂРµС€РµРЅРёРµ СЌРєСЂР°РЅР° РїРѕ X:", en: "Screen resolution X:"}
+        strings["resY"] := {ru: "Р Р°Р·СЂРµС€РµРЅРёРµ СЌРєСЂР°РЅР° РїРѕ Y:", en: "Screen resolution Y:"}
+        strings["borTop"] := {ru: "Р’РµСЂС…РЅСЏСЏ РіСЂР°РЅРёС†Р°:", en: "Top border:"}
+        strings["borBot"] := {ru: "РџР°РЅРµР»СЊ РџРЈРЎРљ:", en: "Taskbar:"}
+        strings["screenHint"] := {ru: "* Yandex Browser: 135 (СЃ РїР°РЅРµР»СЊСЋ Р·Р°РєР»Р°РґРѕРє), 111 (Р±РµР·)", en: "* Yandex Browser: 135 (with bookmarks bar), 111 (without)"}
+        strings["debugTitle"] := {ru: "РџСЂРѕРІРµСЂРєР° РґР»СЏ РѕС‚Р»Р°РґРєРё:", en: "Debug check:"}
+        strings["debugScaleX"] := {ru: "РР·РјРµРЅРµРЅРёРµ РїРѕ X", en: "Scale X"}
+        strings["debugScaleY"] := {ru: "РР·РјРµРЅРµРЅРёРµ РїРѕ Y", en: "Scale Y"}
+        strings["debugNonZero"] := {ru: "(РЅРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ 0)", en: "(should not be 0)"}
+        strings["debugRatio"] := {ru: "РЎРѕРѕС‚РЅРѕС€РµРЅРёРµ СЃС‚РѕСЂРѕРЅ РёРіСЂРѕРІРѕРіРѕ РїРѕР»СЏ", en: "Game area aspect ratio"}
+        strings["debugIdeal"] := {ru: "РёРґРµР°Р»", en: "ideal"}
+        strings["debugRefresh"] := {ru: "Р”Р°РЅРЅС‹Рµ РѕР±РЅРѕРІР»СЏСЋС‚СЃСЏ РїРѕСЃР»Рµ РїРµСЂРµР·Р°РїСѓСЃРєР° РїСЂРѕРіСЂР°РјРјС‹", en: "Values refresh after restarting the program"}
+        strings["versionTitlePrefix"] := {ru: "Р’РµСЂСЃРёСЏ", en: "Version"}
+        strings["versionCan"] := {ru: "Р‘РѕС‚ СѓРјРµРµС‚:", en: "The bot can:"}
+        strings["versionCan1"] := {ru: "- Р·Р°Р±РёСЂР°С‚СЊ РµР¶РµРґРЅРµРІРЅС‹Рµ РїРѕРґР°СЂРєРё РѕСЂР°РєСѓР»Р°", en: "- claim daily oracle gifts"}
+        strings["versionCan2"] := {ru: "- Р·Р°Р±РёСЂР°С‚СЊ РµР¶РµРґРЅРµРІРЅС‹Рµ РїРѕРґР°СЂРєРё РјР°РіР°Р·РёРЅР° Рё РЅР°РіСЂР°РґСѓ Р·Р° РІС…РѕРґ", en: "- claim daily shop gifts and login rewards"}
+        strings["versionCan3"] := {ru: "- С‚СЂРµРЅРёСЂРѕРІР°С‚СЊ РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЃС‚СЂР°Р¶Р°", en: "- train the selected guardian"}
+        strings["versionCan4"] := {ru: "- СЃРѕР±РёСЂР°С‚СЊ Р·Р°РїС‡Р°СЃС‚Рё Сѓ РјРµС…Р°РЅРёРєР°", en: "- collect engineer parts"}
+        strings["versionCan5"] := {ru: "- Р·Р°РїСѓСЃРєР°С‚СЊ Р°Р»С…РёРјРёРєР° (РёСЃРїРѕР»СЊР·СѓРµС‚ С‚РѕР»СЊРєРѕ РєСЂРѕРІСЊ РґСЂР°РєРѕРЅР°)", en: "- run alchemy (uses only Dragon Blood)"}
+        strings["versionCan6"] := {ru: "- Р·Р°РїСѓСЃРєР°С‚СЊ СЂРёС‚СѓР°Р»С‹ РѕСЂР°РєСѓР»Р°", en: "- start oracle rituals"}
+        strings["versionCan7"] := {ru: "- РЅР°С‡РёРЅР°С‚СЊ/Р·Р°РІРµСЂС€Р°С‚СЊ СЌРєСЃРїРµРґРёС†РёРё РіРёР»СЊРґРёРё", en: "- start/finish guild expeditions"}
+        strings["versionCan8"] := {ru: "- СЃРѕР±РёСЂР°С‚СЊ РєРёСЂРєРё", en: "- collect pickaxes"}
+        strings["versionCan9"] := {ru: "- СЃРѕР±РёСЂР°С‚СЊ С‡РµСЂС‚РµР¶Рё СЃ РєР°СЂС‚С‹", en: "- collect blueprints from the map"}
+        strings["versionCan10"] := {ru: "- РёСЃСЃР»РµРґРѕРІР°С‚СЊ РІ Р±РёР±Р»РёРѕС‚РµРєРµ", en: "- run research in the library"}
+        strings["versionCan11"] := {ru: "- Р·Р°РІРµСЂС€Р°С‚СЊ РјРёСЃСЃРёРё РЅР° РєР°СЂС‚Рµ", en: "- finish map missions"}
+        strings["versionCan12"] := {ru: "- РёСЃРєР°С‚СЊ Рё Р·Р°РїСѓСЃРєР°С‚СЊ РЅРѕРІС‹Рµ РјРёСЃСЃРёРё РЅР° РєР°СЂС‚Рµ", en: "- search for and start new map missions"}
+        strings["versionCan13"] := {ru: "- РїРѕРІС‹С€Р°С‚СЊ СѓСЂРѕРІРµРЅСЊ РіРµСЂРѕРµРІ/СЃС‚СЂР°Р¶РµР№/СЃРїРµС† СѓР»СѓС‡С€РµРЅРёР№ РЅР° СЌС‚Р°РїР°С… (РЅСѓР¶РЅРѕ РґРѕРґРµР»Р°С‚СЊ)", en: "- upgrade heroes/guardians/special upgrades on stages (still incomplete)"}
+        strings["versionCan14"] := {ru: "- СЃСЂР°Р¶Р°С‚СЊСЃСЏ РЅР° Р°СЂРµРЅРµ Рё РІС‹РїРѕР»РЅСЏС‚СЊ РѕСЃРІРѕР±РѕРґРёС‚РµР»СЊРЅС‹Рµ/РїРѕРґР·РµРјРµР»СЊРЅС‹Рµ РјРёСЃСЃРёРё (0.3.2)", en: "- fight in the arena and run liberation/dungeon missions (0.3.2)"}
+        strings["versionCan15"] := {ru: "- РїСЂРѕР±СѓР¶РґР°С‚СЊ РіРµСЂРѕРµРІ, СѓС‡Р°СЃС‚РІРѕРІР°С‚СЊ РІ СЂР°Р·Р»РѕРјРµ С…Р°РѕСЃР°, РєР°С‡Р°С‚СЊ РґРµСЂРµРІРѕ, Р·Р°Р±РёСЂР°С‚СЊ РєРІРµСЃС‚С‹/РїРѕС‡С‚Сѓ/РёРІРµРЅС‚С‹", en: "- awaken heroes, join chaos rift, upgrade the tree, and claim quests/mail/events"}
+        strings["versionUntested"] := {ru: "РџРѕ РёРґРµРµ СЂР°Р±РѕС‚Р°РµС‚, РЅРѕ РЅРµ С‚РµСЃС‚РёСЂРѕРІР°Р» (РІ РЇРЅРґРµРєСЃ РёРіСЂР°С…):", en: "Should work, but not tested (Yandex Games):"}
+        strings["versionUntested1"] := {ru: "- РІСЃС‘, С‡С‚Рѕ РґРѕР±Р°РІР»РµРЅРѕ РІ РІРµСЂСЃРёРё 0.3.2 Рё РІС‹С€Рµ", en: "- everything added in version 0.3.2 and later"}
+        strings["versionCannot"] := {ru: "РќРµ СѓРјРµРµС‚:", en: "Cannot do yet:"}
+        strings["versionCannot1"] := {ru: "- РѕС‚РєСЂС‹РІР°С‚СЊ СЃСѓРЅРґСѓРєРё", en: "- open chests"}
+        strings["versionCannot2"] := {ru: "- СѓР»СѓС‡С€Р°С‚СЊ Р±Р»Р°РіРѕСЃР»РѕРІРµРЅРёСЏ РѕСЂР°РєСѓР»Р°, РїРѕС‚РѕРјСѓ С‡С‚Рѕ СЃРЅР°С‡Р°Р»Р° РЅСѓР¶РЅРѕ РЅР°СѓС‡РёС‚СЊ РѕС‚РєСЂС‹РІР°С‚СЊ СЃСѓРЅРґСѓРєРё", en: "- upgrade oracle blessings, because chest opening must work first"}
+        strings["savedTitle"] := {ru: "РЎРѕС…СЂР°РЅРµРЅРѕ", en: "Saved"}
+        strings["savedBody"] := {ru: "РќР°СЃС‚СЂРѕР№РєРё СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅРµРЅС‹!", en: "Settings have been saved successfully!"}
+        strings["startErrorTitle"] := {ru: "РћС€РёР±РєР°", en: "Error"}
+        strings["startErrorBody"] := {ru: "Р¤СѓРЅРєС†РёСЏ 'MainScript' РЅРµ РЅР°Р№РґРµРЅР°.`nРЈР±РµРґРёСЃСЊ, С‡С‚Рѕ Р·Р°РїСѓС‰РµРЅ 'bot.ahk', Р° РЅРµ 'Gui.ahk'.", en: "The function 'MainScript' was not found.`nPlease make sure you are running 'bot.ahk' and not 'Gui.ahk'."}
+        strings["runtimeErrorTitle"] := {ru: "РћС€РёР±РєР°", en: "Error"}
+        strings["runtimeActivateError"] := {ru: "РќРµ СѓРґР°Р»РѕСЃСЊ Р°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РѕРєРЅРѕ Firestone.", en: "Failed to activate the Firestone window."}
+        strings["runtimeCheckTitle"] := {ru: "РџСЂРѕРІРµСЂРєР° РЅР°СЃС‚СЂРѕРµРє", en: "Settings Check"}
+        strings["runtimeCheckIntro"] := {ru: "Р•СЃР»Рё СЂР°РјРєРё СѓРєР°Р·Р°РЅС‹ РІРµСЂРЅРѕ, Р±РѕС‚ РїСЂРѕРєР»РёРєР°РµС‚ РїРѕ СѓРіР»Р°Рј РёРіСЂС‹ Рё РѕС‚РєСЂРѕРµС‚-Р·Р°РєСЂРѕРµС‚ РјРµРЅСЋ.`nРќР°Р¶РјРё ESC, С‡С‚РѕР±С‹ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ Р±РѕС‚Р°.", en: "If the borders are configured correctly, the bot will click the corners of the game and open-close the menu.`nPress ESC to stop the bot."}
+        strings["runtimeMainMenuTitle"] := {ru: "РџСЂРѕРІРµСЂРєР° РіР»Р°РІРЅРѕРіРѕ РјРµРЅСЋ", en: "Main Menu Check"}
+        strings["runtimeMainMenuStart"] := {ru: "РџСЂРѕРІРµСЂСЏРµРј: РЅР°С…РѕРґРёРјСЃСЏ Р»Рё РјС‹ РЅР° РіР»Р°РІРЅРѕРј СЌРєСЂР°РЅРµ РІ РЅР°С‡Р°Р»Рµ С†РёРєР»Р°.", en: "Checking whether we are on the main screen at the start of the cycle."}
+        strings["runtimeMainMenuAfterQuests"] := {ru: "РџСЂРѕРІРµСЂСЏРµРј: РЅР°С…РѕРґРёРјСЃСЏ Р»Рё РјС‹ РЅР° РіР»Р°РІРЅРѕРј СЌРєСЂР°РЅРµ РїРѕСЃР»Рµ РїРѕР»СѓС‡РµРЅРёСЏ Р·Р°РґР°РЅРёР№.", en: "Checking whether we are on the main screen after claiming quests."}
+        strings["runtimeBlessTitle"] := {ru: "OpenBlessChests.ahk РЅРµ СЂР°Р±РѕС‚Р°РµС‚!", en: "OpenBlessChests.ahk does not work!"}
+        strings["runtimeBlessBody"] := {ru: "РћРўРљР›Р®Р§Р РІ РЅР°СЃС‚СЂРѕР№РєР°С… 'РЈР»СѓС‡С€Р°С‚СЊ Р±Р»Р°РіРѕСЃР»РѕРІРµРЅРёСЏ'.", en: "Disable 'Upgrade Blessings' in the settings."}
+    }
+    lang := (UILanguage = "en") ? "en" : "ru"
+    if (strings.HasKey(key))
+        return strings[key][lang]
+    return key
+}
+
+ChangeLanguage:
+    Gui, Submit, NoHide
+    UILanguage := (UILanguageChoice = 2 ? "en" : "ru")
+    SaveSettings()
+    Reload
+return
 
 SaveSettings:
     Gui, Submit, NoHide
-	VarX := (ResXnew/1920)
-	VarY := (ResYnew-BorTop-BorBot)/(1080-22-48)
-	Ratio := ResXnew / (ResYnew - BorBot - BorTop)
+    RecalculateDerivedSettings()
     SaveSettings()
-    MsgBox, 64, Saved, Settings have been saved successfully!
-Return
+    MsgBox, 64, % T("savedTitle"), % T("savedBody")
+return
 
 ButtonStart:
     Gui, Submit, NoHide
-    If IsFunc("MainScript") {
+    RecalculateDerivedSettings()
+    if IsFunc("MainScript") {
         SetTimer, MainScript, -100
-    } Else {
-        MsgBox, 16, Error, The function 'MainScript' was not found.`nPlease ensure you are running 'firestone-bot.ahk' and NOT 'Gui.ahk'.
+    } else {
+        MsgBox, 16, % T("startErrorTitle"), % T("startErrorBody")
     }
-Return
+return
 
-
-; --- INI Helper Functions ---
 LoadSettings() {
     global
-    For VarName, Info in SettingsMap {
+    for VarName, Info in SettingsMap {
         Section := Info[1]
         Default := Info[2]
         IniRead, Val, settings.ini, %Section%, %VarName%, %Default%
-        If (Val = "ERROR")
+        if (Val = "ERROR")
             Val := Default
         %VarName% := Val
     }
@@ -570,9 +661,8 @@ LoadSettings() {
 
 SaveSettings() {
     global
-    For VarName, Info in SettingsMap {
+    for VarName, Info in SettingsMap {
         Section := Info[1]
-        ; Get value from GUI variable
         CurrentVal := %VarName%
         IniWrite, %CurrentVal%, settings.ini, %Section%, %VarName%
     }

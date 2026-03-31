@@ -1,4 +1,4 @@
-; Deaeth85 Firestone Bot.ahk edited by "Я твой друг"
+п»ї; Deaeth85 Firestone Bot.ahk
 #SingleInstance Force
 
 #Include Gui.ahk
@@ -38,44 +38,43 @@ MainScript(){
     CoordMode, Mouse, Screen
     CoordMode, Pixel, Screen
 
-; ====== АКТИВАЦИЯ И ФОКУС ======
-ControlFocus,, Firestone        ; фокус ввода (для клавиатуры)
-WinActivate, Firestone          ; активация окна (поднять наверх)
-WinWaitActive, Firestone, , 1   ; ждём активации (1 сек)
+; Focus and startup checks
+ControlFocus,, Firestone
+WinActivate, Firestone
+WinWaitActive, Firestone, , 1
 
 if ErrorLevel {
-    ; Не ругаемся, а тихо пробуем ещё раз
     WinActivate, Firestone
     Sleep, 100
     if !WinActive("Firestone") {
-        MsgBox, 48, Ошибка, Не удалось активировать окно Firestone.
+        MsgBox, 48, % T("runtimeErrorTitle"), % T("runtimeActivateError")
         ExitApp
     }
 }
 
-Sleep, 100  ; небольшая пауза для гарантии
+Sleep, 100
 
-; ====== ТЕСТОВЫЕ КЛИКИ ПО УГЛАМ ======
-MsgBox, 64, Проверка настроек, Если рамки указаны верно - бот прокликает по углам игры и откроет-закроет меню.`nНажми ESC чтобы остановить бота., 1
+; Focus and startup checks
+MsgBox, 64, % T("runtimeCheckTitle"), % T("runtimeCheckIntro"), 1
 
-; Левый верхний угол
+; Top-left corner
 CoordMode, Mouse, Screen
 CoordMode, Pixel, Screen
 MouseMove, 5*VarX, 5*VarY + BorTop
 Click
 Sleep, 500
 	
-; Левый нижний угол
+; Bottom-left corner
 MouseMove, 5*VarX, 1005*VarY + BorTop
 Click
 Sleep, 500
 
-; Правый нижний угол
+; Bottom-right corner
 MouseMove, 1910*VarX, 1005*VarY + BorTop
 Click
 Sleep, 500
 
-; Правый верхний угол (двойной клик)
+; Top-right corner (double click)
 CoordMode, Mouse, Screen
 CoordMode, Pixel, Screen
 MouseMove, 1910*VarX, 5*VarY + BorTop
@@ -87,8 +86,7 @@ Sleep, 500
 
 loop:
     ControlFocus,, Firestone
-    ; do main screen sections
-    MsgBox, , Проверка главного меню, Проверяем: мы находимся на главном экране в начале цикла, 2
+    MsgBox, , % T("runtimeMainMenuTitle"), % T("runtimeMainMenuStart"), 2
     MainMenu()
     ControlFocus,, Firestone
     GuiControlGet, Checked, , Events,
@@ -100,10 +98,9 @@ loop:
     If (Checked = 1){
         ClaimQuests()
     }
-    MsgBox, , Проверка главного меню, Проверяем: находимся ли мы на главном экране после получения заданий, 2
+    MsgBox, , % T("runtimeMainMenuTitle"), % T("runtimeMainMenuAfterQuests"), 2
     MainMenu()
     ControlFocus,, Firestone
-    ;~ ; check if Claim Free Gift and Check-in is checked
     GuiControlGet, Checked, , Shop,
     If (Checked = 1){
         Shop()
@@ -121,7 +118,7 @@ loop:
         ;check if Upgrade Blessings is checked
         GuiControlGet, Checked, , Bless,
             If (Checked = 1){
-				MsgBox, , OpenBlessChests.ahk не работает!, ОТКЛЮЧИ в настройках "Улучшать благословления", 2
+				MsgBox, , % T("runtimeBlessTitle"), % T("runtimeBlessBody"), 2
                 ;OpenBlessChests()
             }
         }
@@ -228,3 +225,4 @@ GuiEscape:
 GuiClose:
     $Esc::
     ExitApp
+
