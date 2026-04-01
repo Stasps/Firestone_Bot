@@ -42,3 +42,59 @@ Gui, Tab, 6
     Gui, Add, Text, x40 y+5, - Открывать сундуки
     Gui, Add, Text, x40 y+5, - улучшать Благословления оракула (0.3.5), так как нужно сначала научить открывать сундуки
     ; Gui, Add, Text, x40 y+5, - пункт 3 (пример)
+	
+	
+	============================
+	    Gui, Tab, 6
+    Gui, Font, s10 Bold
+    Gui, Add, Text, x40 y40 w880 Center, % T("versionTitlePrefix") " " AppVersion ":"
+    Gui, Font, Norm
+    Gui, Add, Text, x40 y+15, % T("versionCan")
+    Gui, Add, Text, x40 y+5, % T("versionCan1")
+    Gui, Add, Text, x40 y+5, % T("versionCan2")
+    Gui, Add, Text, x40 y+5, % T("versionCan3")
+    Gui, Add, Text, x40 y+5, % T("versionCan4")
+    Gui, Add, Text, x40 y+5, % T("versionCan5")
+    Gui, Add, Text, x40 y+5, % T("versionCan6")
+    Gui, Add, Text, x40 y+5, % T("versionCan7")
+    Gui, Add, Text, x40 y+5, % T("versionCan8")
+    Gui, Add, Text, x40 y+5, % T("versionCan9")
+    Gui, Add, Text, x40 y+5, % T("versionCan10")
+    Gui, Add, Text, x40 y+5, % T("versionCan11")
+    Gui, Add, Text, x40 y+5, % T("versionCan12")
+    Gui, Add, Text, x40 y+5, % T("versionCan13")
+    Gui, Add, Text, x40 y+5, % T("versionCan14")
+    Gui, Add, Text, x40 y+5, % T("versionCan15")
+    Gui, Font, Bold
+    Gui, Add, Text, x40 y+15, % T("versionUntested")
+    Gui, Font, Norm
+    Gui, Add, Text, x40 y+5, % T("versionUntested1")
+    Gui, Font, Bold
+    Gui, Add, Text, x40 y+15, % T("versionCannot")
+    Gui, Font, Norm
+    Gui, Add, Text, x40 y+5, % T("versionCannot1")
+    Gui, Add, Text, x40 y+5, % T("versionCannot2")
+	================================
+        strings["tabVersion"] := {ru: "Версия", en: "Version"}
+		strings["versionTitlePrefix"] := {ru: "Версия", en: "Version"}
+        strings["versionCan"] := {ru: "Бот умеет:", en: "The bot can:"}
+        strings["versionCan1"] := {ru: "- забирать ежедневные подарки оракула", en: "- claim daily oracle gifts"}
+        strings["versionCan2"] := {ru: "- забирать ежедневные подарки магазина и награду за вход", en: "- claim daily shop gifts and login rewards"}
+        strings["versionCan3"] := {ru: "- тренировать выбранного стража", en: "- train the selected guardian"}
+        strings["versionCan4"] := {ru: "- собирать запчасти у механика", en: "- collect engineer parts"}
+        strings["versionCan5"] := {ru: "- запускать алхимика (использует только кровь дракона)", en: "- run alchemy (uses only Dragon Blood)"}
+        strings["versionCan6"] := {ru: "- запускать ритуалы оракула", en: "- start oracle rituals"}
+        strings["versionCan7"] := {ru: "- начинать/завершать экспедиции гильдии", en: "- start/finish guild expeditions"}
+        strings["versionCan8"] := {ru: "- собирать кирки", en: "- collect pickaxes"}
+        strings["versionCan9"] := {ru: "- собирать чертежи с карты", en: "- collect blueprints from the map"}
+        strings["versionCan10"] := {ru: "- исследовать в библиотеке", en: "- run research in the library"}
+        strings["versionCan11"] := {ru: "- завершать миссии на карте", en: "- finish map missions"}
+        strings["versionCan12"] := {ru: "- искать и запускать новые миссии на карте", en: "- search for and start new map missions"}
+        strings["versionCan13"] := {ru: "- повышать уровень героев/стражей/спец улучшений на этапах (нужно доделать)", en: "- upgrade heroes/guardians/special upgrades on stages (still incomplete)"}
+        strings["versionCan14"] := {ru: "- сражаться на арене и выполнять освободительные/подземельные миссии (0.3.2)", en: "- fight in the arena and run liberation/dungeon missions (0.3.2)"}
+        strings["versionCan15"] := {ru: "- пробуждать героев, участвовать в разломе хаоса, качать дерево, забирать квесты/почту/ивенты", en: "- awaken heroes, join chaos rift, upgrade the tree, and claim quests/mail/events"}
+        strings["versionUntested"] := {ru: "По идее работает, но не тестировал (в Яндекс играх):", en: "Should work, but not tested (Yandex Games):"}
+        strings["versionUntested1"] := {ru: "- всё, что добавлено в версии 0.3.2 и выше", en: "- everything added in version 0.3.2 and later"}
+        strings["versionCannot"] := {ru: "Не умеет:", en: "Cannot do yet:"}
+        strings["versionCannot1"] := {ru: "- открывать сундуки", en: "- open chests"}
+        strings["versionCannot2"] := {ru: "- улучшать благословения оракула, потому что сначала нужно научить открывать сундуки", en: "- upgrade oracle blessings, because chest opening must work first"}
