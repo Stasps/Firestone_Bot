@@ -6,7 +6,7 @@
 Guardian(){
     ControlFocus,, Firestone
     ; open Magic Quarter
-	MsgBox, ,, "Тренируем выбранного стража", 1
+	MsgBox, ,Guardian.ahk, % "Тренируем выбранного стража", 1
     MouseMove, 658*ResXnew/1920, ((284-22)*(ResYnew-BorTop-BorBot)/1010+BorTop)
     Sleep, 1000
     click

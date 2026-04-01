@@ -89,7 +89,7 @@ SettingsMap["BorTop"] := ["Resolution"]
 SettingsMap["BorBot"] := ["Resolution"]
 SettingsMap["VarX"] := ["Variable",0]
 SettingsMap["VarY"] := ["Variable",0]
-RusVer := "0.4.1"
+RusVer := "0.4.2"
 Ratio := ResXnew / (ResYnew - BorBot - BorTop)
 RatioStand := 1980/(1080 - 22 - 48)
 SettingsMap["Ratio"] := ["Debug"]
@@ -127,7 +127,7 @@ Gui, Font, s9, Segoe UI
 Gui, Color, White
 
 ; Tabs Structure
-Gui, Add, Tab3, x0 y0 w960 h620, Home|Общие настройки|Гильдия и личное древо|Боевые машины|Настройки экрана|Версия
+Gui, Add, Tab3, x0 y0 w960 h620, Home|Общие настройки|Гильдия и личное древо|Боевые машины|Настройки экрана
 ; ------------------------------------------------------------------------------
 ; TAB 1: HOME (INSTRUCTIONS & START)
 ; ------------------------------------------------------------------------------
@@ -138,11 +138,11 @@ Gui, Tab, 1
     ; Gui, Add, Text, x20 yp+25 w920 Center, бот в разработке (закомментировано)
     
     ; --- Instructions Group ---
-    Gui, Add, GroupBox, x40 y50 w880 h470, % "Важные требования и инструкции"
+    ;Gui, Add, GroupBox, x40 y50 w880 h470, % "Важные требования и инструкции"
 
     ; ----- Система и настройка игры -----
     Gui, Font, Bold
-    Gui, Add, Text, xp+20 yp+25 w840, % "Система и настройка игры:"
+    Gui, Add, Text, x60 y50 w840, % "Система и настройка игры:"
     Gui, Font, Norm
     Gui, Add, Text, x60 y+1 w820, % "• В браузерной версии окно браузера должно начинаться с заголовка Firestone"
     Gui, Add, Text, x60 y+1 w820, % "• Тип интерфейса: Мобильная или ПК версия (новый стиль не поддерживается)"
@@ -201,16 +201,16 @@ Gui, Tab, 2
 
 ; ========== КОЛОНКА 1 ==========
 ; --- Selling & Exotic ---
-Gui, Add, GroupBox, x20 y70 w300 h190, Selling & Exotic Merchant
-Gui, Add, Checkbox, x35 y90 w250 vSellEx Checked%SellEx%, Open Exotic Merchant (Master)
-Gui, Add, Checkbox, x35 y110 w250 vExoticUpgrades Checked%ExoticUpgrades%, Buy Exotic Upgrades
-Gui, Add, Checkbox, x35 y130 w250 vBuyEx Checked%BuyEx%, Buy Exotic Chests
+Gui, Add, GroupBox, x20 y70 w300 h190, Selling & Exotic Merchant (temporarily OFF)
+;=====OFF=====Gui, Add, Checkbox, x35 y90 w250 vSellEx Checked%SellEx%, Open Exotic Merchant (Master)
+;=====OFF=====Gui, Add, Checkbox, x35 y110 w250 vExoticUpgrades Checked%ExoticUpgrades%, Buy Exotic Upgrades
+;=====OFF=====Gui, Add, Checkbox, x35 y130 w250 vBuyEx Checked%BuyEx%, Buy Exotic Chests
 
-Gui, Add, Text, x35 y155 w250, Selling Strategy:
-Gui, Add, Radio, x35 y175 w250 vSellScrolls Checked%SellScrolls%, 1. Sell ONLY Exotic Scrolls
-Gui, Add, Radio, x35 y195 w250 vSellNoGold Checked%SellNoGold%, 2. Sell All But Gold Items
-Gui, Add, Radio, x35 y215 w250 vSellAll Checked%SellAll%, 3. Sell All Exotic Items
-Gui, Add, Radio, x35 y235 w250 vSellNone Checked%SellNone%, 4. Sell Nothing
+Gui, Add, Text, x35 y155 w250, Selling Strategy (temporarily OFF):
+;=====OFF=====Gui, Add, Radio, x35 y175 w250 vSellScrolls Checked%SellScrolls%, 1. Sell ONLY Exotic Scrolls
+;=====OFF=====Gui, Add, Radio, x35 y195 w250 vSellNoGold Checked%SellNoGold%, 2. Sell All But Gold Items
+;=====OFF=====Gui, Add, Radio, x35 y215 w250 vSellAll Checked%SellAll%, 3. Sell All Exotic Items
+;=====OFF=====Gui, Add, Radio, x35 y235 w250 vSellNone Checked%SellNone%, 4. Sell Nothing
 
 ; --- Other Automation ---
 Gui, Add, GroupBox, x20 y265 w300 h130, Прочие автоматизации
@@ -226,7 +226,7 @@ if (GuardianTrain != "")
 
 ; --- Оракул ---
 Gui, Add, GroupBox, x20 y400 w300 h100, Оракул
-Gui, Add, Checkbox, x35 y425 w280 vBless Checked%Bless%, (не работает!) Улучшать благословления
+;=====OFF=====Gui, Add, Checkbox, x35 y425 w280 vBless Checked%Bless%, (не работает!) Улучшать благословления
 Gui, Add, Checkbox, x35 y450 w280 vDailyOracle Checked%DailyOracle%, Забирать ежедневные награды оракула
 Gui, Add, Checkbox, x35 y475 w280 vSkipOracle Checked%SkipOracle%, (Общий) пропустить оракула
 
@@ -240,16 +240,16 @@ if (Delay != "")
 
 ; ========== КОЛОНКА 2 ==========
 ; --- Chests & Rewards ---
-Gui, Add, GroupBox, x335 y70 w300 h160, Chests & Rewards
-Gui, Add, Checkbox, x350 y90 w250 vChests Checked%Chests%, Open Chests (General)
+Gui, Add, GroupBox, x335 y70 w300 h160, Chests & Rewards (temporarily OFF)
+;=====OFF=====Gui, Add, Checkbox, x350 y90 w250 vChests Checked%Chests%, Open Chests (General)
 
 Gui, Add, Text, x350 y115 w250, Exclude Gear Chests:
-Gui, Add, DropDownList, x350 y135 w250 vGearChestExclude, Exclude All|Don't Exclude Any|Epic and Higher|Legendary and Higher|Mythic||
+;=====OFF=====Gui, Add, DropDownList, x350 y135 w250 vGearChestExclude, Exclude All|Don't Exclude Any|Epic and Higher|Legendary and Higher|Mythic||
 if (GearChestExclude != "")
     GuiControl, ChooseString, GearChestExclude, %GearChestExclude%
 
 Gui, Add, Text, x350 y170 w250, Exclude Jewel Chests:
-Gui, Add, DropDownList, x350 y190 w250 vJewelChestExclude, Exclude All|Don't Exclude Any|Diamond and Higher||Opal and Higher|Emerald
+;=====OFF=====Gui, Add, DropDownList, x350 y190 w250 vJewelChestExclude, Exclude All|Don't Exclude Any|Diamond and Higher||Opal and Higher|Emerald
 if (JewelChestExclude != "")
     GuiControl, ChooseString, JewelChestExclude, %JewelChestExclude%
 
@@ -289,10 +289,10 @@ Gui, Add, Checkbox, x665 y165 w250 vChaos Checked%Chaos%, Участвовать в разломе 
 Gui, Add, Checkbox, x665 y190 w250 vShop Checked%Shop%, Подарки (магазин) и награды за вход
 
 ; --- Tavern / Scarab ---
-Gui, Add, GroupBox, x650 y225 w290 h100, Таверна / Игра скарабея
-Gui, Add, Checkbox, x665 y250 w250 vToken Checked%Token%, Use Tavern Tokens / Artifacts
-Gui, Add, Checkbox, x665 y275 w250 vBeer Checked%Beer%, Skip Claiming Beer
-Gui, Add, Checkbox, x665 y300 w250 vScarab Checked%Scarab%, Skip Using Scarab Token
+Gui, Add, GroupBox, x650 y225 w290 h100, Таверна / Игра скарабея (temporarily OFF)
+;=====OFF=====Gui, Add, Checkbox, x665 y250 w250 vToken Checked%Token%, Use Tavern Tokens / Artifacts
+;=====OFF=====Gui, Add, Checkbox, x665 y275 w250 vBeer Checked%Beer%, Skip Claiming Beer
+;=====OFF=====Gui, Add, Checkbox, x665 y300 w250 vScarab Checked%Scarab%, Skip Using Scarab Token
 
 ; --- Mission Priority Order ---
 Gui, Add, GroupBox, x650 y335 w290 h240, Приоритет поиска миссий
@@ -482,51 +482,6 @@ Gui, Tab, 5
     ; --- Кнопки ---
     Gui, Add, Button, x150 y500 w150 h45 gSaveSettings, СОХРАНИТЬ
     Gui, Add, Button, x330 y500 w150 h45 gButtonStart, ЗАПУСТИТЬ
-
-; ------------------------------------------------------------------------------
-; TAB 6: VERSION
-; ------------------------------------------------------------------------------
-Gui, Tab, 6
-
-    ; --- Заголовок ---
-    Gui, Font, s10 Bold
-    Gui, Add, Text, x40 y40 w880 Center, Версия %RusVer%:
-    Gui, Font, Norm
-
-    ; --- Основные возможности ---
-    Gui, Add, Text, x40 y+15, Бот умеет:
-    Gui, Add, Text, x40 y+5, - забирать ежедневные подарки оракула
-    Gui, Add, Text, x40 y+5, - забирать ежедневные подарки магазина и награду за вход
-    Gui, Add, Text, x40 y+5, - тренировать выбранного стража
-    Gui, Add, Text, x40 y+5, - собирать запчасти у механика
-    Gui, Add, Text, x40 y+5, - запускать алхимика (использует только кровь дракона)
-    Gui, Add, Text, x40 y+5, - запускать ритуалы оракула 
-    Gui, Add, Text, x40 y+5, - начинать\завершать экспедиции гильдии
-    Gui, Add, Text, x40 y+5, - собирать кирки
-    Gui, Add, Text, x40 y+5, - собирать чертежи с карты
-    Gui, Add, Text, x40 y+5, - исследовать в библиотеке
-    Gui, Add, Text, x40 y+5, - завершать миссии на карте
-    Gui, Add, Text, x40 y+5, - искать и запускать новые миссии на карте
-    Gui, Add, Text, x40 y+5, - повышать уровень героев\стражей\спец улучшений на этапах (нужно доделать)
-    Gui, Add, Text, x40 y+5, - сражаться на арене, а так же выполнять миссии освобождения\подземелья (0.3.2)
-    Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо (0.3.3)
-    Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\еженедельные задания, проверять почту, забирать награды событий (0.3.4)
-
-    ; --- Шаблон: по идее работает, но не тестировал ---
-    Gui, Font, Bold
-    Gui, Add, Text, x40 y+15, по идее работает, но не тестировал (в яндекс играх):
-    Gui, Font, Norm
-    Gui, Add, Text, x40 y+5, - всё, что добавлено в версии 0.3.2 и выше (начиная со сражений на арене и далее по списку)
-    ;Gui, Add, Text, x40 y+5, - пробуждать героев, участвовать в разломе хаоса и прокачивать персональное древо
-    ;Gui, Add, Text, x40 y+5, - забирать награды за ежедневные\ежнедельные задания, проверять почту, забирать награды событий (0.3.4)
-
-    ; --- Шаблон: не умеет ---
-    Gui, Font, Bold
-    Gui, Add, Text, x40 y+15, не умеет:
-    Gui, Font, Norm
-    Gui, Add, Text, x40 y+5, - Открывать сундуки
-    Gui, Add, Text, x40 y+5, - улучшать Благословления оракула (0.3.5), так как нужно сначала научить открывать сундуки
-    ; Gui, Add, Text, x40 y+5, - пункт 3 (пример)
 
     ; --- Отображение окна (уже есть в коде, оставляем как есть) ---
     Gui, Show, w960 h620, Бот от Стаса на основе бота от Deaeth85 V6.1.0
